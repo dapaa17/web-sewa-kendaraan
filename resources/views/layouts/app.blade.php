@@ -471,6 +471,9 @@
             .app-navbar {
                 background: var(--gradient-brand);
                 box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
+                position: sticky;
+                top: 0;
+                z-index: 1030;
             }
 
             .app-navbar .navbar-brand {
@@ -510,6 +513,9 @@
             .app-navbar .dropdown-menu {
                 margin-top: 0.75rem;
                 border-radius: 1rem;
+                padding: 0.5rem;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+                border: 1px solid rgba(203, 213, 225, 0.6);
             }
 
             .app-navbar .dropdown-item {

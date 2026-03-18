@@ -50,7 +50,7 @@
                         <a class="nav-link dropdown-toggle {{ $profileActive ? 'active' : '' }}" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth::user()->name }}
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i>Profile</a></li>
                             @unless(Auth::user()->isAdmin())
                                 <li><a class="dropdown-item {{ request()->routeIs('profile.ktp') ? 'active' : '' }}" href="{{ route('profile.ktp') }}"><i class="bi bi-person-badge me-2"></i>Verifikasi KTP</a></li>
