@@ -6,8 +6,8 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: PHP Application
-FROM php:8.2-apache
+# Stage 2: PHP Application (CLI Base - No Apache)
+FROM php:8.2-cli
 
 # Install dependencies required for Laravel
 RUN apt-get update && apt-get install -y \
@@ -21,14 +21,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring xml gd zip bcmath \
-    && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
-# Fix DocumentRoot for exiting sites
-RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's!/var/www/!/var/www/html/public/!g' /etc/apache2/apache2.conf
-
-WORKDIR /var/www/html
+WORKDIR /app
 
 # Copy Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -37,21 +32,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . .
 COPY --from=frontend /app/public/build public/build
 
-# Install Vendor Dependencies (ignore scripts to prevent DB connection errors during build)
+# Install Vendor Dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# Set permissions specifically for Laravel writable directories
+# Set permissions
 RUN mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+    && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Write a clean entrypoint script
 RUN echo '#!/bin/bash\n\
 set -e\n\
-\n\
-PORT="${PORT:-8080}"\n\
-echo "Listen ${PORT}" > /etc/apache2/ports.conf\n\
-sed -i "s/:80/:${PORT}/g" /etc/apache2/sites-available/000-default.conf\n\
 \n\
 echo "Bootstrapping Laravel..."\n\
 php artisan package:discover --ansi || true\n\
@@ -62,8 +53,9 @@ php artisan view:cache || true\n\
 echo "Migrating Database..."\n\
 php artisan migrate --force || true\n\
 \n\
-echo "Starting Apache on port ${PORT}..."\n\
-exec apache2-foreground\n\
+export PORT="${PORT:-8000}"\n\
+echo "Starting Laravel server on port ${PORT}..."\n\
+exec php artisan serve --host=0.0.0.0 --port=${PORT}\n\
 ' > /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh
 
