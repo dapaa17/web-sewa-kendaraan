@@ -17,7 +17,7 @@
         <link href="https://fonts.bunny.net/css?family=sora:600,700,800&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/js/app.js'])
 
         <style>
             :root {
@@ -578,8 +578,8 @@
         </style>
         @yield('css')
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-white">
+    <body>
+        <div class="min-vh-100 bg-white">
             @include('layouts.navigation')
 
             <!-- Page Content -->
