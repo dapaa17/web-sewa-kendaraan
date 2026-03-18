@@ -19,14 +19,10 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure Apache to use /public as document root
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/*.conf \
-    /etc/apache2/apache2.conf
-
-# Use PORT env variable from Railway (default 80)
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+# Configure Apache DocumentRoot
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 WORKDIR /var/www/html
 
@@ -39,32 +35,33 @@ COPY . .
 # Copy built frontend assets from stage 1
 COPY --from=frontend /app/public/build public/build
 
-# Install PHP dependencies (production only)
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 
-# Create required storage directories
-RUN mkdir -p storage/logs \
-    storage/framework/cache/data \
-    storage/framework/sessions \
-    storage/framework/views \
-    bootstrap/cache
-
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Create startup script
+# Create a robust startup script
 RUN echo '#!/bin/bash\n\
 set -e\n\
-echo "Running Laravel setup..."\n\
-php artisan config:cache\n\
-php artisan route:cache\n\
-php artisan view:cache\n\
-php artisan storage:link 2>/dev/null || true\n\
-php artisan migrate --force\n\
-echo "Starting Apache on port ${PORT:-80}..."\n\
-apache2-foreground' > /usr/local/bin/start.sh \
+\n\
+# Configure Apache port\n\
+PORT="${PORT:-8080}"\n\
+sed -i "s/80/${PORT}/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf\n\
+\n\
+echo "Caching Laravel config..."\n\
+php artisan config:cache || true\n\
+php artisan route:cache || true\n\
+php artisan view:cache || true\n\
+\n\
+echo "Running migrations..."\n\
+php artisan migrate --force || true\n\
+\n\
+echo "Starting Apache on port ${PORT}..."\n\
+exec apache2-foreground\n\
+' > /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
-EXPOSE ${PORT:-80}
 CMD ["/usr/local/bin/start.sh"]
