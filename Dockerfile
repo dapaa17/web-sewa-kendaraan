@@ -23,9 +23,12 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mbstring xml gd zip bcmath \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+WORKDIR /var/www/html
 
-# Copy Composer
+# Configure PHP upload limits
+RUN echo "upload_max_filesize = 20M\npost_max_size = 20M" > /usr/local/etc/php/conf.d/uploads.ini
+
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy application files First

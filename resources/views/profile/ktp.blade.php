@@ -446,10 +446,9 @@
                            id="ktp_image" 
                            name="ktp_image" 
                            class="d-none @error('ktp_image') is-invalid @enderror"
-                           accept="image/jpeg,image/png,image/jpg"
-                           required>
+                           accept="image/jpeg,image/png,image/jpg">
                     @error('ktp_image')
-                        <div class="text-danger small mt-2">{{ $message }}</div>
+                        <div class="text-danger small mt-2 d-block">{{ $message }}</div>
                     @enderror
                 </div>
                 
