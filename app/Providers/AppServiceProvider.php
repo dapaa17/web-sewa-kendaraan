@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         RateLimiter::for('review-submission', function (Request $request) {
             $userKey = (string) ($request->user()?->getAuthIdentifier() ?? $request->ip());
             $booking = $request->route('booking');
