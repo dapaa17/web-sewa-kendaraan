@@ -66,7 +66,10 @@ class MotorSeeder extends Seeder
         ];
 
         foreach ($motors as $motor) {
-            Vehicle::create($motor);
+            Vehicle::firstOrCreate(
+                ['plat_number' => $motor['plat_number']],
+                $motor
+            );
         }
     }
 }

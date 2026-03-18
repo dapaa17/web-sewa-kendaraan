@@ -52,6 +52,7 @@ php artisan view:cache || true\n\
 \n\
 echo "Migrating Database..."\n\
 php artisan migrate --force || true\n\
+php artisan db:seed --force || true\n\
 \n\
 export PORT="${PORT:-8000}"\n\
 echo "Starting Laravel server on port ${PORT}..."\n\
