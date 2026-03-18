@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RentalHub
 
 RentalHub adalah aplikasi rental kendaraan berbasis Laravel untuk mengelola penyewaan mobil atau motor dari sisi customer dan admin. Aplikasi ini mendukung registrasi dan login, booking kendaraan, verifikasi KTP, upload bukti pembayaran, verifikasi pembayaran oleh admin, waiting list untuk kendaraan yang masih dipakai, serta auto-cancel booking yang tidak dibayar.
@@ -211,3 +212,7 @@ composer test
 - Status kendaraan akan berubah mengikuti tanggal mulai sewa yang sudah dikonfirmasi, waiting list, dan penyelesaian booking.
 - Verifikasi KTP diperlukan sebelum customer dapat melanjutkan flow pembayaran.
 - Booking yang start besok akan menerima reminder email otomatis sekali saja.
+=======
+# web-sewa-kendaraan
+web sewa kendaraan laravel
+>>>>>>> 73792b4957b70a679d5bc9068b1358e6a415d2c6
