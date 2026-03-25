@@ -40,7 +40,6 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 # Set permissions
 RUN mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache \
-    && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Write a clean entrypoint script
