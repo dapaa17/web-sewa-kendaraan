@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminCalendarController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminKtpController;
 use App\Http\Controllers\AdminBookingTimelineController;
@@ -24,6 +25,14 @@ Route::get('/about', function () {
 Route::get('/panduan', function () {
     return view('guide');
 })->name('guide');
+
+// Public Browse & Vehicle Detail (tanpa perlu login)
+Route::get('/vehicles', [VehicleController::class, 'browse'])->name('vehicles.browse');
+Route::get('/vehicles/{vehicle}', [VehicleController::class, 'show'])->name('vehicles.show');
+Route::get('/vehicles/{vehicle}/calendar', [VehicleController::class, 'showWithCalendar'])->name('vehicles.calendar');
+Route::get('/api/vehicles/{vehicle}/availability', [CalendarController::class, 'getVehicleAvailability'])->name('api.vehicle.availability');
+Route::get('/api/vehicles/{vehicle}/price', [CalendarController::class, 'getVehiclePrice'])->name('api.vehicle.price');
+Route::get('/api/vehicles/{vehicle}/calendar-data', [CalendarController::class, 'getCalendarData'])->name('api.vehicle.calendar-data');
 
 // Authentication routes (built-in Laravel)
 Route::middleware('auth')->group(function () {
@@ -82,15 +91,14 @@ Route::middleware('auth')->group(function () {
             Route::post('/{user}/verify', [AdminKtpController::class, 'verify'])->name('verify');
         });
 
+        // Reports
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/transactions', [ReportController::class, 'transactions'])->name('transactions');
+        });
+
     });
 
-    // Public Browse & Booking Routes
-    Route::get('/vehicles', [VehicleController::class, 'browse'])->name('vehicles.browse');
-    Route::get('/vehicles/{vehicle}', [VehicleController::class, 'show'])->name('vehicles.show');
-    Route::get('/vehicles/{vehicle}/calendar', [VehicleController::class, 'showWithCalendar'])->name('vehicles.calendar');
-    Route::get('/api/vehicles/{vehicle}/availability', [CalendarController::class, 'getVehicleAvailability'])->name('api.vehicle.availability');
-    Route::get('/api/vehicles/{vehicle}/price', [CalendarController::class, 'getVehiclePrice'])->name('api.vehicle.price');
-    Route::get('/api/vehicles/{vehicle}/calendar-data', [CalendarController::class, 'getCalendarData'])->name('api.vehicle.calendar-data');
+    // Note: Browse & vehicle detail routes moved outside auth group for public access
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

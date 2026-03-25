@@ -586,6 +586,12 @@
                 padding-left: 2.5rem;
                 padding-right: 2.5rem;
             }
+            .adm-content .rpt-header {
+                margin: -1.5rem -1.5rem 0;
+                border-radius: 0 0 1.5rem 1.5rem;
+                padding-left: 2.5rem;
+                padding-right: 2.5rem;
+            }
             .adm-content .browse-header {
                 margin: -1.5rem -1.5rem 2rem;
                 border-radius: 0 0 1.5rem 1.5rem;
@@ -609,7 +615,8 @@
             .adm-content .bk-header .container,
             .adm-content .payment-header .container,
             .adm-content .op-header .container,
-            .adm-content .wa-header .container {
+            .adm-content .wa-header .container,
+            .adm-content .rpt-header .container {
                 padding-left: 0;
                 padding-right: 0;
             }
@@ -620,7 +627,8 @@
             .adm-content .pf-body,
             .adm-content .gd-body,
             .adm-content .bk-body,
-            .adm-content .op-body {
+            .adm-content .op-body,
+            .adm-content .rpt-body {
                 padding-left: 0.5rem;
                 padding-right: 0.5rem;
             }
@@ -688,7 +696,8 @@
                 .adm-content .bk-header,
                 .adm-content .payment-header,
                 .adm-content .op-header,
-                .adm-content .wa-header {
+                .adm-content .wa-header,
+                .adm-content .rpt-header {
                     margin: -1.35rem -1.35rem 0;
                     padding-left: 1.75rem;
                     padding-right: 1.75rem;
@@ -798,6 +807,7 @@
             $admKtpActive = request()->routeIs('admin.ktp.*');
             $admReviewsActive = request()->routeIs('admin.reviews.*');
             $admSettingsActive = request()->routeIs('admin.settings.*');
+            $admReportsActive = request()->routeIs('admin.reports.*');
             $admProfileActive = request()->routeIs('profile.*');
             $admBrowseActive = request()->routeIs('vehicles.browse') || request()->routeIs('vehicles.show') || request()->routeIs('vehicles.calendar');
             $admGuideActive = request()->routeIs('guide');
@@ -857,6 +867,11 @@
                         @if(($adminSidebarStats['review_pending'] ?? 0) > 0)
                             <span class="adm-nav-badge">{{ $adminSidebarStats['review_pending'] }}</span>
                         @endif
+                    </a>
+
+                    <div class="adm-nav-label">Laporan</div>
+                    <a href="{{ route('admin.reports.transactions') }}" class="adm-nav-item {{ $admReportsActive ? 'active' : '' }}" data-adm-tooltip="Laporan Transaksi" aria-label="Laporan Transaksi">
+                        <i class="bi bi-file-earmark-bar-graph"></i><span class="adm-nav-text">Laporan Transaksi</span>
                     </a>
 
                     <div class="adm-nav-label">Pengaturan</div>

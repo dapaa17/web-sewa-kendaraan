@@ -66,6 +66,9 @@
                     </li>
                 @else
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('vehicles.browse') || request()->routeIs('vehicles.show') ? 'active' : '' }}" href="{{ route('vehicles.browse') }}">Cari Kendaraan</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ $aboutActive ? 'active' : '' }}" href="{{ route('about') }}">Tentang Kami</a>
                     </li>
                     <li class="nav-item">

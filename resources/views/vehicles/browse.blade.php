@@ -390,7 +390,7 @@
                 <button type="submit" class="btn btn-primary btn-filter">
                     <i class="bi bi-search"></i>
                 </button>
-                @if(request('search') || request('transmission') || request('start_date') || request('end_date') || request('vehicle_type'))
+                @if(request('search') || request('transmission') || request('start_date') || request('end_date') || request('vehicle_type') || request('sort'))
                     <a href="{{ route('vehicles.browse') }}" class="btn btn-reset">
                         <i class="bi bi-x-lg"></i>
                     </a>
@@ -409,6 +409,40 @@
                         Bisa dibooking untuk tanggal <strong>{{ $selectedDateLabel }}</strong>
                     </div>
                 @endif
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span style="color: #718096; font-size: 0.85rem; white-space: nowrap;">Urutkan:</span>
+                <div class="dropdown">
+                    <button class="btn btn-sm rounded-pill px-3 dropdown-toggle {{ request('sort') ? 'btn-primary' : 'btn-outline-secondary' }}" type="button" data-bs-toggle="dropdown" style="font-weight: 600; font-size: 0.85rem;">
+                        @if(request('sort') === 'price_asc')
+                            💰 Termurah
+                        @elseif(request('sort') === 'price_desc')
+                            💰 Termahal
+                        @else
+                            Harga
+                        @endif
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item {{ request('sort') === 'price_asc' ? 'active' : '' }}" href="{{ route('vehicles.browse', array_merge(request()->except('sort', 'page'), ['sort' => 'price_asc'])) }}">
+                                <i class="bi bi-sort-up me-2"></i>Harga Terendah
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ request('sort') === 'price_desc' ? 'active' : '' }}" href="{{ route('vehicles.browse', array_merge(request()->except('sort', 'page'), ['sort' => 'price_desc'])) }}">
+                                <i class="bi bi-sort-down me-2"></i>Harga Tertinggi
+                            </a>
+                        </li>
+                        @if(request('sort'))
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('vehicles.browse', request()->except('sort', 'page')) }}">
+                                <i class="bi bi-x-circle me-2"></i>Reset Urutan
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                </div>
             </div>
         </div>
     @endif

@@ -196,7 +196,16 @@ class VehicleController extends Controller
                 . Carbon::parse($request->query('end_date'))->format('d M Y');
         }
 
-        $vehicles = $query->paginate(12);
+        // Sort by price
+        if ($request->filled('sort')) {
+            if ($request->sort === 'price_asc') {
+                $query->orderBy('daily_price', 'asc');
+            } elseif ($request->sort === 'price_desc') {
+                $query->orderBy('daily_price', 'desc');
+            }
+        }
+
+        $vehicles = $query->paginate(12)->withQueryString();
 
         if ($hasAvailabilityFilter) {
             $vehicles->getCollection()->transform(function (Vehicle $vehicle) use ($request) {

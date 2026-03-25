@@ -263,8 +263,8 @@
                             <i class="bi bi-journal-text"></i> Booking Saya
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="btn-hero-primary">
-                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        <a href="{{ route('vehicles.browse') }}" class="btn-hero-primary">
+                            <i class="bi bi-search"></i> Lihat Kendaraan
                         </a>
                         <a href="{{ route('register') }}" class="btn-hero-outline">
                             <i class="bi bi-person-plus"></i> Daftar Sekarang
