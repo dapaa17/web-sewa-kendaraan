@@ -290,6 +290,14 @@
         color: white;
         filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.25));
     }
+
+    /* Pagination Styling */
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 2.5rem;
+    }
+
     @media (max-width: 767.98px) {
         .browse-header {
             padding: 2.8rem 0 2.35rem;
@@ -528,8 +536,8 @@
         </div>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-5">
-            {{ $vehicles->withQueryString()->links() }}
+        <div class="pagination-wrapper">
+            {{ $vehicles->withQueryString()->links('vendor.pagination.custom') }}
         </div>
     @else
         <div class="empty-state">

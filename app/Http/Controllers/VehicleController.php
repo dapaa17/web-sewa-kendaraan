@@ -205,7 +205,7 @@ class VehicleController extends Controller
             }
         }
 
-        $vehicles = $query->paginate(12)->withQueryString();
+        $vehicles = $query->paginate(6)->withQueryString();
 
         if ($hasAvailabilityFilter) {
             $vehicles->getCollection()->transform(function (Vehicle $vehicle) use ($request) {
