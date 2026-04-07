@@ -52,14 +52,9 @@ php artisan config:cache || true\n\
 php artisan route:cache || true\n\
 php artisan view:cache || true\n\
 \n\
-echo "Migrating Database..."\n\
-php artisan migrate --force || true\n\
-php artisan db:seed --force || true\n\
-\n\
 export PORT="${PORT:-8000}"\n\
 echo "Starting Laravel server on port ${PORT}..."\n\
 exec php artisan serve --host=0.0.0.0 --port=${PORT}\n\
 ' > /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh
-
 CMD ["/usr/local/bin/entrypoint.sh"]
