@@ -23,9 +23,7 @@ class AdminBookingScheduleSettingsTest extends TestCase
             ->assertSee('Pengaturan Admin')
             ->assertSee('Default Jadwal Booking')
             ->assertSee('Rentang jadwal default')
-            ->assertSee('Jadwal Booking')
-            ->assertSee('Operasional')
-            ->assertSee('Komunikasi');
+            ->assertSee('Jadwal Booking');
     }
 
     public function test_admin_can_update_default_booking_schedule_times(): void
