@@ -36,7 +36,7 @@ return [
     ],
 
     'whatsapp' => [
-        'admin_number' => env('PAYMENT_WHATSAPP_NUMBER', '6282293230668'),
+        'admin_number' => env('PAYMENT_WHATSAPP_NUMBER', '6281296024886'),
         'bank_name' => env('PAYMENT_BANK_NAME', 'Bank BCA'),
         'account_name' => env('PAYMENT_ACCOUNT_NAME', 'PT. RentalHub Indonesia'),
         'account_number' => env('PAYMENT_ACCOUNT_NUMBER', '1234567890'),
