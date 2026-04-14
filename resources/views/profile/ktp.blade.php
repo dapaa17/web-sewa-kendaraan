@@ -385,7 +385,7 @@
             </h5>
             <p class="form-subtitle">Dokumen yang saat ini tersimpan dan dipakai untuk proses verifikasi identitas Anda.</p>
             <div class="current-ktp">
-                <img src="{{ asset('storage/' . $user->ktp_image) }}" alt="KTP">
+                <img src="{{ $user->ktp_image_url }}" alt="KTP">
             </div>
             <div class="detail-grid">
                 <div class="detail-card">

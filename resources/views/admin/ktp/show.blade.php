@@ -277,21 +277,160 @@
         margin: 0;
     }
     @media (max-width: 768px) {
+        .ktp-container {
+            padding-inline: 1rem;
+            padding-bottom: 2rem;
+        }
         .ktp-header {
             padding: 2.6rem 0 2.15rem;
+            margin-bottom: 1.25rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+        .ktp-header h1 {
+            font-size: 1.45rem;
+            line-height: 1.35;
+        }
+        .back-link {
+            margin-bottom: 0.85rem;
+            font-size: 0.9rem;
+            gap: 0.4rem;
         }
         .info-grid {
             grid-template-columns: 1fr;
+            gap: 0.75rem;
         }
         .section-card,
         .action-card {
-            padding: 1.4rem;
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+        .section-title {
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+        }
+        .section-title .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 0.65rem;
+        }
+        .section-title h5 {
+            font-size: 1rem;
+        }
+        .user-header {
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .user-summary {
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        .user-avatar {
+            width: 54px;
+            height: 54px;
+            font-size: 1.3rem;
+        }
+        .user-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        .user-info .meta {
+            font-size: 0.82rem;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .status-chip {
+            font-size: 0.78rem;
+            padding: 0.5rem 0.85rem;
+        }
+        .info-item {
+            border-radius: 0.85rem;
+            padding: 0.85rem;
+        }
+        .info-item .label {
+            font-size: 0.7rem;
+        }
+        .info-item .value {
+            font-size: 0.92rem;
+        }
+        .ktp-image-container {
+            margin-bottom: 1rem;
+            border-radius: 1rem;
+            padding: 0.55rem;
+        }
+        .ktp-image {
+            max-height: 320px;
+            border-radius: 0.8rem;
+        }
+        .action-card h5 {
+            font-size: 1.05rem;
+        }
+        .action-card .helper-text {
+            font-size: 0.86rem;
+            line-height: 1.55;
+            margin-bottom: 1rem;
+        }
+        .review-note {
+            border-radius: 0.85rem;
+            padding: 0.8rem 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .review-note h6 {
+            font-size: 0.92rem;
+        }
+        .review-note p {
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+        .action-card textarea {
+            min-height: 92px;
+        }
+        .action-card .form-label {
+            font-size: 0.84rem;
+            margin-bottom: 0.45rem;
         }
         .action-buttons {
             flex-direction: column;
+            gap: 0.65rem;
         }
         .action-buttons .btn {
             width: 100%;
+            min-height: 44px;
+            padding: 0.72rem 1rem;
+            border-radius: 0.85rem;
+            font-size: 0.9rem;
+        }
+        .verified-badge,
+        .rejected-badge {
+            border-radius: 0.9rem;
+            padding: 1.2rem;
+        }
+        .verified-badge i {
+            font-size: 2.3rem;
+            margin-bottom: 0.75rem;
+        }
+        .verified-badge h4 {
+            font-size: 1.05rem;
+        }
+        .verified-badge p,
+        .rejected-badge p {
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+    }
+    @media (max-width: 420px) {
+        .ktp-header h1 {
+            font-size: 1.28rem;
+        }
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            font-size: 1.15rem;
+        }
+        .status-chip {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>
@@ -362,7 +501,7 @@
             <h5>Foto KTP</h5>
         </div>
         <div class="ktp-image-container">
-            <img src="{{ asset('storage/' . $user->ktp_image) }}" class="ktp-image" alt="KTP {{ $user->name }}">
+            <img src="{{ $user->ktp_image_url }}" class="ktp-image" alt="KTP {{ $user->name }}">
         </div>
     </div>
 

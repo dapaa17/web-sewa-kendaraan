@@ -460,22 +460,143 @@
     @media (max-width: 767.98px) {
         .vhc-hero {
             padding: 2rem 0 4.5rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+        .vhc-hero h1 {
+            font-size: 1.38rem;
+            line-height: 1.35;
+            margin-bottom: 0.55rem;
+        }
+        .vhc-hero-copy {
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+        .vhc-back {
+            font-size: 0.84rem;
+            margin-bottom: 0.7rem;
+        }
+        .vhc-meta {
+            gap: 0.55rem;
+            margin-top: 0.9rem;
+        }
+        .vhc-meta-chip {
+            width: 100%;
+            font-size: 0.78rem;
+            padding: 0.52rem 0.72rem;
         }
         .vhc-shell {
             margin-top: -2.5rem;
+            padding-bottom: 2rem;
+            padding-inline: 1rem;
+        }
+        .vhc-panel {
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        .vhc-panel-head {
+            gap: 0.7rem;
+            margin-bottom: 0.75rem;
+        }
+        .vhc-panel-head h2,
+        .vhc-panel-head h3 {
+            font-size: 0.98rem;
+        }
+        .vhc-panel-head p {
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+        .vhc-calendar-toolbar {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .vhc-calendar-toolbar .btn {
+            min-height: 40px;
+        }
+        .vhc-legend span {
+            font-size: 0.78rem;
         }
         .vhc-calendars {
             grid-template-columns: 1fr;
+        }
+        .vhc-calendar {
+            padding: 0.5rem;
+        }
+        .vhc-calendar .fc-col-header-cell-cushion {
+            font-size: 0.64rem;
+            padding: 0.45rem 0.05rem;
+        }
+        .vhc-calendar .fc-daygrid-day-number {
+            font-size: 0.74rem;
+        }
+        .vhc-calendar .fc-daygrid-day-frame {
+            min-height: 84px;
+            padding-bottom: 1.25rem;
+        }
+        .vhc-price-badge {
+            left: 0.4rem;
+            right: 0.4rem;
+            bottom: 0.35rem;
+            font-size: 0.6rem;
         }
         .vhc-summary-grid,
         .vhc-vehicle-facts,
         .vhc-vehicle-card {
             grid-template-columns: 1fr;
+            gap: 0.65rem;
+        }
+        .vhc-summary-card {
+            border-radius: 0.85rem;
+            padding: 0.75rem 0.8rem;
+        }
+        .vhc-summary-card .label {
+            font-size: 0.68rem;
+        }
+        .vhc-summary-card strong {
+            font-size: 0.96rem;
+        }
+        .vhc-price-total {
+            font-size: 1.2rem;
+        }
+        .vhc-status-banner {
+            border-radius: 0.85rem;
+            padding: 0.78rem;
+            font-size: 0.82rem;
+        }
+        .vhc-breakdown-row,
+        .vhc-addon-item,
+        .vhc-info-card,
+        .vhc-vehicle-facts .fact {
+            border-radius: 0.85rem;
+            padding: 0.7rem 0.75rem;
+        }
+        .vhc-breakdown-row .date,
+        .vhc-addon-item strong,
+        .vhc-info-card strong {
+            font-size: 0.84rem;
+        }
+        .vhc-breakdown-row .meta,
+        .vhc-addon-item span,
+        .vhc-info-card span,
+        .vhc-vehicle-facts .fact .label {
+            font-size: 0.76rem;
+        }
+        #selectionResetBtn,
+        #calendarBookingSubmit {
+            min-height: 42px;
         }
         .vhc-vehicle-card img,
         .vhc-vehicle-placeholder {
             width: 100%;
             height: 180px;
+        }
+    }
+    @media (max-width: 420px) {
+        .vhc-hero h1 {
+            font-size: 1.2rem;
+        }
+        .vhc-calendar .fc-daygrid-day-frame {
+            min-height: 74px;
         }
     }
 </style>
@@ -609,8 +730,8 @@
 
                 <div class="vhc-panel">
                     <div class="vhc-vehicle-card">
-                        @if($vehicle->image)
-                            <img src="{{ Storage::url($vehicle->image) }}" alt="{{ $vehicle->name }}">
+                        @if($vehicle->display_image_url)
+                            <img src="{{ $vehicle->display_image_url }}" alt="{{ $vehicle->name }}">
                         @else
                             <div class="vhc-vehicle-placeholder">
                                 <i class="bi {{ $vehicle->vehicle_type === 'motor' ? 'bi-bicycle' : 'bi-car-front-fill' }}"></i>

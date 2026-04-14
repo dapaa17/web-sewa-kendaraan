@@ -107,10 +107,10 @@
                         {{-- Image upload --}}
                         <div class="vf-group">
                             <label class="vf-label">Foto Kendaraan</label>
-                            @if($vehicle->image)
+                            @if($vehicle->display_image_url)
                                 <div class="vf-current-img">
-                                    <img src="{{ Storage::url($vehicle->image) }}" alt="{{ $vehicle->name }}">
-                                    <div class="label">Foto saat ini</div>
+                                    <img src="{{ $vehicle->display_image_url }}" alt="{{ $vehicle->name }}">
+                                    <div class="label">Foto saat ini{{ $vehicle->image ? '' : ' (placeholder otomatis)' }}</div>
                                 </div>
                             @endif
                             <label class="vf-upload-zone" for="image">

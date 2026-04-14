@@ -433,6 +433,27 @@
     @media (max-width: 767.98px) {
         .vehicle-hero {
             padding: 2.6rem 0 2.2rem;
+            margin-bottom: 1.2rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+        .vehicle-shell {
+            padding-inline: 1rem;
+            padding-bottom: 2rem;
+        }
+        .vehicle-hero h1 {
+            font-size: 1.45rem;
+            line-height: 1.35;
+            margin-bottom: 0.55rem;
+        }
+        .back-link {
+            font-size: 0.84rem;
+            margin-bottom: 0.7rem;
+        }
+        .meta-chip {
+            width: 100%;
+            justify-content: flex-start;
+            font-size: 0.8rem;
+            padding: 0.55rem 0.8rem;
         }
         .vehicle-media img,
         .vehicle-placeholder {
@@ -446,13 +467,84 @@
         .spec-grid {
             grid-template-columns: 1fr;
         }
+        .media-card,
         .panel-card,
         .description-card {
-            padding: 1.35rem;
+            border-radius: 1rem;
+        }
+        .panel-card,
+        .description-card {
+            padding: 1rem;
+        }
+        .section-heading {
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
+        }
+        .section-heading .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 0.65rem;
+        }
+        .section-heading h5 {
+            font-size: 0.98rem;
+        }
+        .description-copy {
+            font-size: 0.86rem;
+            line-height: 1.65;
+        }
+        .vehicle-badge {
+            font-size: 0.78rem;
+            padding: 0.48rem 0.72rem;
+        }
+        .vehicle-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.85rem;
+        }
+        .price-box {
+            border-radius: 0.9rem;
+            padding: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .price-box .label {
+            font-size: 0.72rem;
+            margin-bottom: 0.4rem;
+        }
+        .price-box .price {
+            font-size: 1.45rem;
+        }
+        .price-box .caption {
+            font-size: 0.8rem;
+        }
+        .review-score-card,
+        .spec-card,
+        .notice-card {
+            border-radius: 0.85rem;
+            padding: 0.8rem;
+        }
+        .review-score-caption,
+        .notice-card p {
+            font-size: 0.82rem;
+        }
+        .btn-booking,
+        .btn-back {
+            min-height: 44px;
+            border-radius: 0.85rem;
+            font-size: 0.88rem;
+            padding: 0.72rem 0.9rem;
         }
         .review-card-footer {
             flex-direction: column;
             align-items: flex-start;
+        }
+    }
+    @media (max-width: 420px) {
+        .vehicle-hero h1 {
+            font-size: 1.22rem;
+        }
+        .vehicle-media img,
+        .vehicle-placeholder {
+            min-height: 230px;
+            height: 230px;
         }
     }
 </style>
@@ -481,9 +573,9 @@
     <div class="row g-4 align-items-start">
         <div class="col-lg-7">
             <div class="media-card">
-                @if($vehicle->image)
+                @if($vehicle->display_image_url)
                     <div class="vehicle-media">
-                        <img src="{{ Storage::url($vehicle->image) }}" alt="{{ $vehicle->name }}">
+                        <img src="{{ $vehicle->display_image_url }}" alt="{{ $vehicle->name }}">
                     </div>
                 @else
                     <div class="vehicle-placeholder">

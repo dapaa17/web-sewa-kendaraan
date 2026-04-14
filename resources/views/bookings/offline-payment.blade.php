@@ -67,9 +67,34 @@
     .op-help ul li i{color:#94a3b8;width:.9rem;text-align:center;flex-shrink:0}
 
     @media(max-width:767px){
-        .op-header{padding:2rem 0 4.5rem}
-        .op-header h1{font-size:1.4rem}
-        .op-body{margin-top:-2.5rem}
+        .op-header{padding:2.35rem 0 4.2rem}
+        .op-header h1{font-size:1.35rem;line-height:1.35}
+        .op-header .subtitle{font-size:.84rem;line-height:1.55}
+        .op-back{font-size:.82rem;margin-bottom:.65rem}
+        .op-body{margin-top:-2.5rem;padding-bottom:2rem}
+        .op-body .container{padding-inline:1rem}
+        .op-card{border-radius:1rem}
+        .op-card-head{padding:.85rem 1rem}
+        .op-card-head h2{font-size:.88rem}
+        .op-card-body{padding:1rem}
+        .op-steps li{font-size:.8rem;gap:.6rem;padding:.5rem 0}
+        .op-steps li::before{width:1.4rem;height:1.4rem;font-size:.66rem}
+        .op-bank{padding:.8rem .9rem;border-radius:.8rem}
+        .op-bank-row{font-size:.8rem;gap:.65rem;align-items:flex-start}
+        .op-bank-row .amount{font-size:.95rem}
+        .op-upload-zone{padding:1.2rem .8rem;border-radius:.75rem}
+        .op-upload-zone i{font-size:1.65rem}
+        .op-upload-zone span{font-size:.78rem}
+        .op-preview img{max-height:160px}
+        .op-submit,.op-cancel{min-height:44px;font-size:.84rem}
+        .op-note{font-size:.78rem;padding:.75rem .85rem}
+        .op-help{border-radius:.9rem;padding:1rem;margin-top:1rem}
+        .op-help p,.op-help ul li{font-size:.8rem}
+    }
+
+    @media(max-width:420px){
+        .op-header h1{font-size:1.22rem}
+        .op-bank-row{flex-direction:column}
     }
 </style>
 @endsection

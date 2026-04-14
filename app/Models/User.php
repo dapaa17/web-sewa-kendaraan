@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -97,6 +98,25 @@ class User extends Authenticatable
     public function hasUploadedKtp(): bool
     {
         return $this->ktp_image !== null;
+    }
+
+    /**
+     * Get accessible URL for KTP image with fallback when public/storage symlink is unavailable.
+     */
+    public function getKtpImageUrlAttribute(): ?string
+    {
+        if (! $this->ktp_image) {
+            return null;
+        }
+
+        $relativePath = ltrim($this->ktp_image, '/');
+        $publicStoragePath = public_path('storage/' . $relativePath);
+
+        if (File::exists($publicStoragePath)) {
+            return asset('storage/' . $relativePath);
+        }
+
+        return route('profile.ktp.image', $this);
     }
 
     /**

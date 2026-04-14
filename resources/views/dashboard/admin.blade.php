@@ -357,11 +357,137 @@
         flex-wrap: wrap;
     }
     @media (max-width: 767.98px) {
-        .revenue-card { padding: 1.4rem; }
-        .s-card { padding: 1.15rem 1rem; }
-        .s-num { font-size: 1.5rem; }
-        .rev-amount { font-size: 1.4rem; }
-        .calendar-widget-grid { grid-template-columns: 1fr; }
+        .dash-header {
+            padding: 2.4rem 0 4.4rem;
+        }
+        .dash-header h1 {
+            font-size: 1.45rem;
+            line-height: 1.35;
+        }
+        .dash-header .subtitle {
+            font-size: 0.86rem;
+            line-height: 1.6;
+        }
+        .dash-date-chip {
+            display: inline-flex !important;
+            margin-top: 0.75rem;
+            font-size: 0.76rem;
+            padding: 0.38rem 0.8rem;
+        }
+        .dash-body {
+            margin-top: -2.65rem;
+            padding-bottom: 2rem;
+        }
+        .stat-grid,
+        .booking-stat-grid {
+            grid-template-columns: 1fr;
+            gap: 0.7rem;
+        }
+        .revenue-card {
+            padding: 1.2rem;
+            border-radius: 1rem;
+        }
+        .s-card {
+            padding: 1rem 0.9rem;
+            border-radius: 0.9rem;
+        }
+        .s-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+            border-radius: 0.75rem;
+        }
+        .s-num {
+            font-size: 1.35rem;
+        }
+        .s-label {
+            font-size: 0.78rem;
+        }
+        .rev-chip {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+        }
+        .rev-amount {
+            font-size: 1.28rem;
+        }
+        .rev-label {
+            font-size: 0.74rem;
+        }
+        .sec-title {
+            font-size: 1.02rem;
+            margin-bottom: 0.85rem;
+        }
+        .qa-btn {
+            padding: 0.95rem 0.9rem;
+            border-radius: 0.85rem;
+        }
+        .qa-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+        .qa-text strong {
+            font-size: 0.84rem;
+        }
+        .tbl-wrap {
+            overflow-x: auto;
+        }
+        .tbl-wrap table {
+            min-width: 700px;
+        }
+        .tbl-wrap thead th {
+            padding: 0.72rem 0.8rem;
+        }
+        .tbl-wrap tbody td {
+            padding: 0.78rem 0.8rem;
+            font-size: 0.82rem;
+        }
+        .calendar-widget-card {
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        .calendar-widget-head {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+        }
+        .calendar-widget-head h3 {
+            font-size: 1rem;
+        }
+        .calendar-widget-head .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .calendar-widget-grid {
+            grid-template-columns: 1fr;
+            gap: 0.65rem;
+        }
+        .calendar-widget-item {
+            border-radius: 0.85rem;
+            padding: 0.75rem 0.8rem;
+        }
+        .calendar-widget-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.55rem;
+        }
+        .calendar-widget-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    @media (max-width: 420px) {
+        .dash-header h1 {
+            font-size: 1.3rem;
+        }
+        .s-num {
+            font-size: 1.2rem;
+        }
+        .rev-amount {
+            font-size: 1.16rem;
+        }
     }
 </style>
 

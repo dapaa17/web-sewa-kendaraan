@@ -301,16 +301,43 @@
     @media (max-width: 767.98px) {
         .browse-header {
             padding: 2.8rem 0 2.35rem;
+            margin-bottom: 1.2rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+
+        .browse-header h1 {
+            font-size: 1.45rem;
+            line-height: 1.35;
+        }
+
+        .browse-header p {
+            font-size: 0.86rem;
+            line-height: 1.6;
+        }
+
+        .browse-body {
+            padding-inline: 1rem;
         }
 
         .filter-card {
-            padding: 1.25rem;
+            padding: 1rem;
+            border-radius: 0.95rem;
         }
 
         .filter-card form .col-md-1 {
             width: 100%;
             display: grid !important;
             grid-template-columns: 1fr 1fr;
+            gap: 0.55rem !important;
+        }
+
+        .filter-card .form-label {
+            font-size: 0.79rem;
+        }
+
+        .filter-card .form-control,
+        .filter-card .form-select {
+            min-height: 44px;
         }
 
         .btn-filter,
@@ -318,6 +345,23 @@
         .vehicle-card .btn-detail {
             width: 100%;
             justify-content: center;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .results-info {
+            margin-bottom: 1rem;
+        }
+
+        .results-info .count {
+            width: 100%;
+            font-size: 0.84rem;
+        }
+
+        .results-info > .d-flex {
+            width: 100%;
+            justify-content: space-between;
         }
 
         .vehicle-card .price-section {
@@ -326,9 +370,41 @@
             gap: 1rem;
         }
 
+        .vehicle-card .card-body {
+            padding: 1rem;
+        }
+
+        .vehicle-card .vehicle-name {
+            font-size: 1.03rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .vehicle-card .info-item,
+        .vehicle-card .review-preview-text,
+        .vehicle-card .review-empty {
+            font-size: 0.82rem;
+        }
+
+        .vehicle-card .price {
+            font-size: 1.22rem;
+        }
+
+        .vehicle-card .price-section .btn-detail {
+            width: 100%;
+        }
+
         .type-tab {
             flex: 1 1 calc(50% - 0.7rem);
             text-align: center;
+        }
+    }
+    @media (max-width: 420px) {
+        .type-tab {
+            flex: 1 1 100%;
+        }
+
+        .filter-card form .col-md-1 {
+            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -341,7 +417,7 @@
     </div>
 </div>
 
-<div class="container pb-5">
+<div class="container pb-5 browse-body">
     <!-- Quick Type Tabs -->
     <div class="type-tabs">
         <a href="{{ route('vehicles.browse') }}" class="type-tab {{ !request('vehicle_type') ? 'active' : '' }}">
@@ -462,8 +538,8 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="vehicle-card">
                         <div class="position-relative">
-                            @if($vehicle->image)
-                                <img src="{{ Storage::url($vehicle->image) }}" 
+                            @if($vehicle->display_image_url)
+                                <img src="{{ $vehicle->display_image_url }}" 
                                      class="card-img-top" alt="{{ $vehicle->name }}">
                             @else
                                 <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background: var(--gradient-brand);">

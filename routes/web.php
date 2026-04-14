@@ -106,6 +106,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile/ktp', [ProfileController::class, 'showKtp'])->name('profile.ktp');
     Route::post('/profile/ktp', [ProfileController::class, 'uploadKtp'])->name('profile.ktp.upload');
+    Route::get('/profile/ktp-image/{user}', [ProfileController::class, 'ktpImage'])->name('profile.ktp.image');
 
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::get('/bookings/{booking}/review/create', [ReviewController::class, 'create'])->name('reviews.create');

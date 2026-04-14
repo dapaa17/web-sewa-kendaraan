@@ -247,9 +247,90 @@
     .empty-box p { color: var(--color-muted); font-size: 0.9rem; }
 
     @media (max-width: 767.98px) {
-        .act-card { padding: 1.35rem; }
-        .act-visual { width: 3rem; height: 3rem; flex-basis: 3rem; font-size: 1.2rem; }
-        .s-num { font-size: 1.5rem; }
+        .dash-header {
+            padding: 2.35rem 0 4.15rem;
+        }
+        .dash-header h1 {
+            font-size: 1.45rem;
+            line-height: 1.35;
+        }
+        .dash-header .subtitle {
+            font-size: 0.84rem;
+            line-height: 1.6;
+        }
+        .customer-dash-body {
+            margin-top: -2.55rem;
+            padding-inline: 1rem;
+            padding-bottom: 2rem;
+        }
+        .stat-row {
+            gap: 0.65rem;
+        }
+        .s-card {
+            padding: 1rem 0.85rem;
+            border-radius: 0.85rem;
+        }
+        .s-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 1.05rem;
+            margin-bottom: 0.55rem;
+        }
+        .s-num {
+            font-size: 1.35rem;
+        }
+        .s-label {
+            font-size: 0.74rem;
+        }
+        .act-card {
+            padding: 1rem 0.95rem;
+            border-radius: 0.95rem;
+        }
+        .act-visual {
+            width: 2.8rem;
+            height: 2.8rem;
+            flex-basis: 2.8rem;
+            font-size: 1.05rem;
+            border-radius: 0.85rem;
+        }
+        .act-card h5 {
+            font-size: 0.92rem;
+        }
+        .act-card p {
+            font-size: 0.78rem;
+        }
+        .up-card {
+            border-radius: 0.9rem;
+            padding: 1rem;
+        }
+        .up-card .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 0.8rem;
+            align-items: stretch !important;
+        }
+        .up-card .btn {
+            width: 100%;
+            justify-content: center;
+            min-height: 42px;
+        }
+        .tbl-wrap {
+            overflow-x: auto;
+        }
+        .tbl-wrap table {
+            min-width: 680px;
+        }
+        .empty-box {
+            padding: 2.4rem 1rem;
+            border-radius: 0.9rem;
+        }
+        .empty-box i {
+            font-size: 2.8rem;
+        }
+    }
+    @media (max-width: 420px) {
+        .stat-row {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -261,7 +342,7 @@
     </div>
 </div>
 
-<div class="container dash-body">
+<div class="container dash-body customer-dash-body">
     <!-- Stat Cards -->
     <div class="stat-row mb-5">
         <div class="s-card blue">

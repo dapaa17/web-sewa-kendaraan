@@ -71,9 +71,32 @@
     .bk-alert.info{background:rgba(6,182,212,.06);color:#0e7490;border-left:3px solid #06b6d4}
 
     @media(max-width:767px){
-        .bk-header{padding:2rem 0 4.5rem}
-        .bk-header h1{font-size:1.4rem}
-        .bk-body{margin-top:-2.5rem}
+        .bk-header{padding:2.35rem 0 4.2rem}
+        .bk-header h1{font-size:1.38rem;line-height:1.35}
+        .bk-header .subtitle{font-size:.84rem;line-height:1.55}
+        .bk-back{font-size:.82rem;margin-bottom:.65rem}
+        .bk-body{margin-top:-2.5rem;padding-bottom:2rem}
+        .bk-body .container{padding-inline:1rem}
+        .bk-card{border-radius:1rem}
+        .bk-card-head{padding:.85rem 1rem}
+        .bk-card-head h2{font-size:.88rem}
+        .bk-card-body{padding:1rem}
+        .bk-control{min-height:44px;font-size:.84rem}
+        .vehicle-preview-media,
+        .vehicle-preview-placeholder{height:180px;border-radius:.75rem}
+        .vehicle-preview-placeholder i{font-size:3rem}
+        .bk-specs li{font-size:.82rem}
+        .bk-summary{border-radius:.9rem;padding:1rem}
+        .bk-summary-row{font-size:.82rem}
+        .bk-summary-total{font-size:1.25rem}
+        .bk-breakdown-row{padding:.6rem .65rem;font-size:.78rem}
+        .bk-hint{font-size:.75rem}
+        .bk-submit{min-height:44px;font-size:.86rem;padding:.65rem}
+    }
+
+    @media(max-width:420px){
+        .bk-time-row{grid-template-columns:1fr}
+        .bk-header h1{font-size:1.24rem}
     }
 </style>
 @endsection
@@ -183,8 +206,8 @@
                         <h2>Detail Kendaraan</h2>
                     </div>
                     <div class="bk-card-body">
-                        @if($vehicle->image)
-                            <img src="{{ Storage::url($vehicle->image) }}"
+                        @if($vehicle->display_image_url)
+                            <img src="{{ $vehicle->display_image_url }}"
                                  class="vehicle-preview-media" alt="{{ $vehicle->name }}">
                         @else
                             <div class="vehicle-preview-placeholder">

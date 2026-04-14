@@ -17,11 +17,10 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libxml2-dev \
     libonig-dev \
-    libpq-dev \
     unzip \
     curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring xml gd zip bcmath \
+    && docker-php-ext-install pdo_mysql mbstring xml gd zip bcmath \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
@@ -43,8 +42,23 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 RUN mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Render-friendly entrypoint with optional persistent storage support
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Write a clean entrypoint script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+echo "Bootstrapping Laravel..."\n\
+php artisan package:discover --ansi || true\n\
+php artisan config:cache || true\n\
+php artisan route:cache || true\n\
+php artisan view:cache || true\n\
+\n\
+echo "Skipping automatic migrate and seed on startup."\n\
+echo "Run database migration manually during release."\n\
+\n\
+export PORT="${PORT:-8000}"\n\
+echo "Starting Laravel server on port ${PORT}..."\n\
+exec php artisan serve --host=0.0.0.0 --port=${PORT}\n\
+' > /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh
 
 CMD ["/usr/local/bin/entrypoint.sh"]

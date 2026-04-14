@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class Vehicle extends Model
 {
@@ -76,6 +77,78 @@ class Vehicle extends Model
     public function getTypeLabel(): string
     {
         return ucfirst($this->vehicle_type);
+    }
+
+    /**
+     * Get vehicle image URL with generated fallback per vehicle.
+     */
+    public function getDisplayImageUrlAttribute(): string
+    {
+        if (!empty($this->image) && filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+
+        if (!empty($this->image) && Storage::disk('public')->exists($this->image)) {
+            return Storage::url($this->image);
+        }
+
+        return $this->buildInlinePlaceholderImage();
+    }
+
+    /**
+     * Build deterministic SVG placeholder so each vehicle always has a unique image.
+     */
+    protected function buildInlinePlaceholderImage(): string
+    {
+        $palettes = [
+            ['#0f172a', '#0e7490', '#22d3ee'],
+            ['#1e293b', '#0f766e', '#34d399'],
+            ['#312e81', '#1d4ed8', '#38bdf8'],
+            ['#3f3f46', '#2563eb', '#60a5fa'],
+            ['#111827', '#334155', '#64748b'],
+        ];
+
+        $seed = abs(crc32((string) $this->id . '|' . (string) $this->name . '|' . (string) $this->plat_number));
+        $palette = $palettes[$seed % count($palettes)];
+
+        $name = strtoupper(trim((string) ($this->name ?: 'KENDARAAN')));
+        $plate = strtoupper(trim((string) ($this->plat_number ?: 'NO-PLATE')));
+        $type = strtoupper($this->vehicle_type === 'motor' ? 'MOTOR' : 'MOBIL');
+
+        $limitText = static function (string $value, int $max): string {
+            if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+                return mb_strlen($value) > $max ? mb_substr($value, 0, $max - 1) . '…' : $value;
+            }
+
+            return strlen($value) > $max ? substr($value, 0, $max - 1) . '...' : $value;
+        };
+
+        $name = $limitText($name, 24);
+        $plate = $limitText($plate, 18);
+
+        $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+        $plate = htmlspecialchars($plate, ENT_QUOTES, 'UTF-8');
+        $type = htmlspecialchars($type, ENT_QUOTES, 'UTF-8');
+
+        $svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 640'>"
+            . "<defs>"
+            . "<linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'>"
+            . "<stop offset='0%' stop-color='{$palette[0]}'/>"
+            . "<stop offset='55%' stop-color='{$palette[1]}'/>"
+            . "<stop offset='100%' stop-color='{$palette[2]}'/>"
+            . "</linearGradient>"
+            . "</defs>"
+            . "<rect width='900' height='640' fill='url(#bg)'/>"
+            . "<circle cx='770' cy='110' r='170' fill='rgba(255,255,255,0.10)'/>"
+            . "<circle cx='90' cy='570' r='220' fill='rgba(255,255,255,0.07)'/>"
+            . "<rect x='72' y='78' width='170' height='52' rx='26' fill='rgba(255,255,255,0.16)'/>"
+            . "<text x='157' y='111' fill='white' font-size='24' font-family='Arial, sans-serif' font-weight='700' text-anchor='middle'>{$type}</text>"
+            . "<rect x='72' y='390' width='756' height='178' rx='28' fill='rgba(15,23,42,0.36)'/>"
+            . "<text x='450' y='463' fill='white' font-size='54' font-family='Arial, sans-serif' font-weight='700' text-anchor='middle'>{$name}</text>"
+            . "<text x='450' y='517' fill='rgba(255,255,255,0.92)' font-size='35' font-family='Arial, sans-serif' text-anchor='middle'>{$plate}</text>"
+            . "</svg>";
+
+        return 'data:image/svg+xml;charset=UTF-8,' . rawurlencode($svg);
     }
 
     /**

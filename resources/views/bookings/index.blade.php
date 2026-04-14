@@ -600,15 +600,91 @@
         color: #718096;
     }
     @media (max-width: 768px) {
+        .booking-header {
+            padding: 2.5rem 0 2.1rem;
+            margin-bottom: 1.2rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+        .booking-header h1 {
+            font-size: 1.4rem;
+            line-height: 1.35;
+        }
+        .booking-header p {
+            font-size: 0.86rem;
+            line-height: 1.6;
+        }
+        .booking-header-actions {
+            width: 100%;
+        }
+        .booking-header-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .booking-page-body {
+            padding-inline: 1rem;
+        }
+        .filter-panel {
+            padding: 0.9rem;
+            border-radius: 1rem;
+        }
         .filter-panel-header {
             align-items: stretch;
+            gap: 0.7rem;
+        }
+        .filter-panel-header h2 {
+            font-size: 1rem;
         }
         .filter-reset {
             width: 100%;
             justify-content: center;
         }
+        .filter-group {
+            padding: 0.72rem;
+            border-radius: 0.85rem;
+        }
+        .filter-group-title {
+            font-size: 0.86rem;
+        }
         .filter-tab {
             flex: 1 1 calc(50% - 0.55rem);
+            min-height: 44px;
+            font-size: 0.8rem;
+            padding: 0.6rem 0.7rem;
+        }
+        .filter-count {
+            min-width: 1.6rem;
+            height: 1.6rem;
+            font-size: 0.7rem;
+        }
+        .stats-row {
+            grid-template-columns: 1fr;
+            gap: 0.65rem;
+        }
+        .stat-pill {
+            border-radius: 0.85rem;
+            padding: 0.75rem 0.8rem;
+        }
+        .stat-pill .number {
+            font-size: 1.2rem;
+        }
+        .bookings-list-header,
+        .booking-explainer {
+            border-radius: 0.9rem;
+            padding: 0.8rem;
+        }
+        .booking-card {
+            border-radius: 0.9rem;
+            padding: 0.9rem;
+        }
+        .admin-status-stack,
+        .booking-card .badges {
+            gap: 0.3rem;
+        }
+        .badge-status,
+        .badge-method,
+        .badge-priority,
+        .badge-deadline {
+            font-size: 0.68rem;
         }
         .booking-card .header-row {
             flex-direction: column;
@@ -617,22 +693,59 @@
         .booking-card .details-row {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
+        .booking-card .actions,
+        .admin-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.45rem;
+        }
+        .booking-card .actions form,
+        .admin-actions form {
+            width: 100%;
+            display: block;
+        }
+        .booking-card .actions .btn,
+        .admin-actions .btn,
+        .booking-card .actions form .btn,
+        .admin-actions form .btn {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+        }
         .admin-table-wrap {
             overflow-x: auto;
         }
         .admin-table {
-            min-width: 920px;
+            min-width: 820px;
+        }
+        .admin-table thead th,
+        .admin-table tbody td {
+            padding: 0.8rem 0.72rem;
         }
         .admin-table tbody tr {
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
     }
     @media (max-width: 576px) {
+        .booking-header h1 {
+            font-size: 1.25rem;
+        }
+        .booking-header p {
+            font-size: 0.82rem;
+        }
         .filter-tab {
             flex: 1 1 100%;
         }
         .booking-card .details-row {
             grid-template-columns: 1fr;
+        }
+        .empty-state {
+            padding: 2.4rem 1rem;
+        }
+        .empty-state i {
+            font-size: 3rem;
         }
     }
 </style>
@@ -746,7 +859,7 @@
     </div>
 </div>
 
-<div class="container pb-5">
+<div class="container pb-5 booking-page-body">
     <div class="filter-panel">
         <div class="filter-panel-header">
             <div>

@@ -2,13 +2,13 @@
     $usesAdminLayout = (bool) auth()->user()?->isAdmin();
     $bookingIndexRoute = $usesAdminLayout ? 'admin.bookings.index' : 'bookings.index';
 @endphp
-@extends($usesAdminLayout ? 'layouts.admin' : 'layouts.app')
+            margin-bottom: 1.2rem;
 
 @section('title', 'Detail Booking')
 @if($usesAdminLayout)
 @section('page-title', 'Detail Booking')
 @endif
-
+            margin-bottom: 0.5rem;
 @section('content')
 <style>
     .detail-header {
@@ -20,6 +20,7 @@
     }
     .detail-header h1 {
         font-weight: 700;
+            padding-inline: 1rem;
         font-size: clamp(2rem, 4.8vw, 3rem);
         margin-bottom: 0.75rem;
     }
@@ -38,6 +39,7 @@
     .detail-header .meta-chip {
         display: inline-flex;
         align-items: center;
+            gap: 0.65rem;
         gap: 0.5rem;
         padding: 0.7rem 1rem;
         border-radius: 999px;
@@ -513,20 +515,121 @@
     @media (max-width: 768px) {
         .detail-header {
             padding: 2.55rem 0 2.15rem;
+            margin-bottom: 1.2rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+        .detail-header h1 {
+            font-size: 1.42rem;
+            line-height: 1.35;
+            margin-bottom: 0.5rem;
+        }
+        .detail-header .booking-id {
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+        }
+        .detail-container {
+            padding-inline: 1rem;
+            padding-bottom: 2rem;
         }
         .detail-header .header-meta {
             flex-direction: column;
             align-items: flex-start;
+            width: 100%;
+        }
+        .detail-header .meta-chip {
+            width: 100%;
+            justify-content: flex-start;
+            font-size: 0.8rem;
+            padding: 0.55rem 0.8rem;
+        }
+        .status-card,
+        .section-card,
+        .admin-section {
+            border-radius: 1rem;
+            padding: 1rem;
+            gap: 0.65rem;
+        }
+        .status-info h5 {
+            font-size: 0.96rem;
+        }
+        .status-info p {
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+        .badge-status {
+            font-size: 0.72rem;
+            padding: 0.45rem 0.8rem;
+        }
+        .alert-card {
+            padding: 0.9rem;
+            border-radius: 0.85rem;
+            gap: 0.75rem;
+        }
+        .alert-card .content p {
+            font-size: 0.82rem;
+        }
+        .section-title {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            gap: 0.6rem;
+        }
+        .section-title .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 0.65rem;
+        }
+        .section-title h5 {
+            font-size: 0.98rem;
         }
         .info-grid {
             grid-template-columns: 1fr;
+            gap: 0.65rem;
         }
         .vehicle-info {
             flex-direction: column;
+            gap: 1rem;
         }
         .vehicle-image {
             flex: none;
             width: 100%;
+        }
+        .vehicle-image img,
+        .vehicle-placeholder {
+            min-height: 180px;
+        }
+        .vehicle-details h4 {
+            font-size: 1.15rem;
+            margin-bottom: 0.85rem;
+        }
+        .info-item {
+            border-radius: 0.8rem;
+            padding: 0.75rem 0.8rem;
+        }
+        .info-item .label {
+            font-size: 0.7rem;
+        }
+        .info-item .value {
+            font-size: 0.88rem;
+        }
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+            padding: 0.65rem 0;
+        }
+        .detail-row .value.price {
+            font-size: 1.05rem;
+        }
+        .inspection-note {
+            text-align: left;
+        }
+        .payment-status-box {
+            padding: 0.9rem;
+            border-radius: 0.85rem;
+        }
+        .method-chip {
+            font-size: 0.78rem;
+            padding: 0.48rem 0.72rem;
         }
         .status-badges,
         .payment-status-main,
@@ -549,6 +652,20 @@
         .admin-section .action-row .btn-action,
         .admin-section .col-12.d-flex .btn-action {
             width: 100%;
+        }
+        .btn-action {
+            min-height: 44px;
+            padding: 0.62rem 0.9rem;
+            font-size: 0.84rem;
+        }
+    }
+    @media (max-width: 420px) {
+        .detail-header h1 {
+            font-size: 1.24rem;
+        }
+        .status-badges .badge-status {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>

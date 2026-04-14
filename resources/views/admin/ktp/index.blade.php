@@ -372,15 +372,67 @@
         color: #718096;
     }
     @media (max-width: 767.98px) {
+        .ktp-container {
+            padding-inline: 1rem;
+            padding-bottom: 2rem;
+        }
         .ktp-header {
             padding: 2.6rem 0 2.15rem;
+            margin-bottom: 1.2rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+        .ktp-header h1 {
+            font-size: 1.45rem;
+            line-height: 1.35;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
         }
         .stat-pill {
-            width: 100%;
-            flex: none;
+            width: auto;
+            flex: 1 1 auto;
+            border-radius: 1.1rem;
+            padding: 0.85rem 0.9rem;
+            gap: 0.75rem;
+        }
+        .stat-pill .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.85rem;
+            font-size: 1rem;
+        }
+        .stat-pill .number {
+            font-size: 1.05rem;
+        }
+        .stat-pill .label {
+            font-size: 0.78rem;
+        }
+        .stat-pill:last-child {
+            grid-column: 1 / -1;
+        }
+        .ktp-filter-panel {
+            padding: 0.9rem;
+            border-radius: 1rem;
+        }
+        .ktp-filter-header {
+            margin-bottom: 0.75rem;
+        }
+        .ktp-filter-header h2 {
+            font-size: 0.98rem;
+        }
+        .ktp-filter-header p {
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+        .ktp-filter-chip {
+            font-size: 0.76rem;
+            padding: 0.48rem 0.7rem;
         }
         .ktp-filter-form {
             grid-template-columns: 1fr;
+            gap: 0.65rem;
         }
         .ktp-filter-form .btn,
         .ktp-filter-reset {
@@ -388,17 +440,99 @@
             justify-content: center;
         }
         .user-card {
-            padding: 1.2rem;
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+        .user-card .header-row {
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+        .user-card .user-info {
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        .user-card .avatar {
+            width: 44px;
+            height: 44px;
+            font-size: 1.05rem;
+        }
+        .user-card .user-details h5 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+        .user-card .user-details .meta {
+            font-size: 0.8rem;
+            line-height: 1.45;
+        }
+        .status-chip {
+            font-size: 0.75rem;
+            padding: 0.5rem 0.8rem;
+        }
+        .user-card .details-row {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            padding: 0.8rem;
+            margin-bottom: 0.85rem;
+        }
+        .user-card .detail-item .label {
+            font-size: 0.7rem;
+        }
+        .user-card .detail-item .value {
+            font-size: 0.9rem;
+        }
+        .user-card .detail-item.preview {
+            grid-column: 1 / -1;
+        }
+        .ktp-thumb {
+            width: 100%;
+            max-width: 280px;
+        }
+        .ktp-thumb .ktp-preview {
+            height: 120px;
         }
         .card-actions,
         .btn-view,
         .btn-approve {
             width: 100%;
         }
+        .card-actions {
+            gap: 0.55rem;
+        }
+        .card-actions form {
+            width: 100%;
+        }
+        .btn-action {
+            width: 100%;
+            min-height: 44px;
+            padding: 0.62rem 0.95rem;
+            font-size: 0.82rem;
+        }
         .btn-view,
         .btn-approve {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+        }
+        .empty-state {
+            padding: 2.4rem 1rem;
+        }
+        .empty-state i {
+            font-size: 3rem;
+        }
+    }
+    @media (max-width: 420px) {
+        .stats-row {
+            grid-template-columns: 1fr;
+        }
+        .stat-pill:last-child {
+            grid-column: auto;
+        }
+        .ktp-filter-meta {
+            width: 100%;
+        }
+        .ktp-filter-chip {
+            flex: 1 1 auto;
             justify-content: center;
         }
     }
@@ -517,7 +651,7 @@
                     <div class="detail-item preview">
                         <span class="label">Preview KTP</span>
                         <div class="ktp-thumb mt-1">
-                            <img src="{{ asset('storage/' . $user->ktp_image) }}" class="ktp-preview" alt="KTP {{ $user->name }}">
+                            <img src="{{ $user->ktp_image_url }}" class="ktp-preview" alt="KTP {{ $user->name }}">
                         </div>
                     </div>
                 </div>

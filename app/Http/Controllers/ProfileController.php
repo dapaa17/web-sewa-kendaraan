@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,5 +112,21 @@ class ProfileController extends Controller
         ]);
 
         return Redirect::route('profile.ktp')->with('success', 'KTP berhasil diupload! Menunggu verifikasi admin.');
+    }
+
+    /**
+     * Serve KTP image for owner/admin without depending on public/storage symlink.
+     */
+    public function ktpImage(Request $request, User $user)
+    {
+        $viewer = $request->user();
+
+        abort_unless($viewer && ($viewer->isAdmin() || $viewer->id === $user->id), 403);
+
+        if (! $user->ktp_image || ! Storage::disk('public')->exists($user->ktp_image)) {
+            abort(404);
+        }
+
+        return response()->file(Storage::disk('public')->path($user->ktp_image));
     }
 }

@@ -272,11 +272,114 @@
         font-size: 0.9rem;
     }
     @media (max-width: 768px) {
+        .payment-header {
+            padding: 2.2rem 0 1.9rem;
+            margin-bottom: 1.2rem;
+            border-radius: 0 0 1.35rem 1.35rem;
+        }
+        .payment-header h1 {
+            font-size: 1.35rem;
+            line-height: 1.35;
+        }
+        .payment-header p {
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+        .payment-container {
+            padding-inline: 1rem;
+            padding-bottom: 2rem;
+        }
+        .booking-summary-card {
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .summary-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+        }
+        .summary-header .icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 0.8rem;
+            font-size: 1.15rem;
+        }
+        .summary-header h5 {
+            font-size: 0.98rem;
+        }
         .payment-methods {
             grid-template-columns: 1fr;
+            gap: 0.85rem;
+            margin-bottom: 1.2rem;
         }
         .summary-grid {
             grid-template-columns: 1fr;
+            gap: 0.7rem;
+        }
+        .summary-item .label {
+            font-size: 0.72rem;
+        }
+        .summary-item .value {
+            font-size: 0.9rem;
+        }
+        .summary-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            gap: 0.75rem;
+        }
+        .summary-total .amount {
+            font-size: 1.24rem;
+        }
+        .method-title {
+            margin: 1rem 0;
+        }
+        .method-title h4 {
+            font-size: 1.05rem;
+        }
+        .method-title p {
+            font-size: 0.82rem;
+        }
+        .payment-card {
+            border-radius: 1rem;
+            padding: 1.1rem;
+        }
+        .payment-card .icon-wrapper {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        .payment-card h4 {
+            font-size: 1rem;
+        }
+        .payment-card .desc {
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+        }
+        .payment-card .features li {
+            font-size: 0.8rem;
+        }
+        .btn-submit,
+        .btn-back {
+            min-height: 44px;
+            border-radius: 0.85rem;
+            font-size: 0.9rem;
+            padding: 0.72rem 1rem;
+        }
+        .info-alert {
+            border-radius: 0.85rem;
+            padding: 0.9rem;
+            gap: 0.65rem;
+            margin-top: 1rem;
+        }
+        .info-alert p {
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+    }
+    @media (max-width: 420px) {
+        .payment-header h1 {
+            font-size: 1.2rem;
         }
     }
 </style>

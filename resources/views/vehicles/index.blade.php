@@ -66,6 +66,15 @@
     .vh-act.delete{background:rgba(239,68,68,.08);color:#dc2626}
     .vh-act.delete:hover{background:rgba(239,68,68,.16)}
 
+    /* Mobile cards */
+    .vh-mobile-list{display:none}
+    .vh-mobile-card{background:#fff;border:1px solid rgba(203,213,225,.72);border-radius:1rem;padding:.9rem;box-shadow:var(--shadow-soft)}
+    .vh-mobile-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.65rem;margin-bottom:.7rem}
+    .vh-mobile-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin-bottom:.75rem}
+    .vh-mobile-meta-item{padding:.55rem .62rem;border-radius:.72rem;background:#f8fafc;border:1px solid rgba(226,232,240,.9)}
+    .vh-mobile-meta-item .label{display:block;color:#64748b;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.15rem}
+    .vh-mobile-meta-item .value{display:block;color:#0f172a;font-size:.82rem;font-weight:600;line-height:1.35}
+
     /* Empty state */
     .vh-empty{text-align:center;padding:4rem 1rem;background:#fff;border-radius:1.15rem;box-shadow:0 2px 12px rgba(15,23,42,.05)}
     .vh-empty-icon{font-size:3rem;margin-bottom:1rem;opacity:.4}
@@ -87,11 +96,30 @@
     @media(max-width:767px){
         .vh-header{padding:2rem 0 4.5rem}
         .vh-header h1{font-size:1.4rem}
+        .vh-header .subtitle{font-size:.84rem;line-height:1.55}
         .vh-body{margin-top:-2.5rem}
+        .vh-body .container{padding-inline:1rem}
+        .vh-add-btn{width:100%;justify-content:center}
+        .vh-filter-panel{padding:.9rem;border-radius:1rem}
+        .vh-filter-header{margin-bottom:.8rem}
+        .vh-filter-header h2{font-size:.98rem}
+        .vh-filter-header p{font-size:.84rem;line-height:1.55}
+        .vh-filter-chip{font-size:.76rem;padding:.48rem .7rem}
         .vh-filter-grid{grid-template-columns:1fr}
         .vh-filter-actions{flex-direction:column}
         .vh-filter-actions .btn,.vh-filter-reset{width:100%;justify-content:center}
         .vh-actions{flex-wrap:wrap}
+        .vh-mobile-list{display:grid;gap:.7rem}
+        .vh-mobile-head .vh-badge{font-size:.7rem;padding:.28rem .58rem}
+        .vh-mobile-list .vh-actions{display:grid;grid-template-columns:1fr;gap:.45rem}
+        .vh-mobile-list .vh-actions form{width:100%}
+        .vh-mobile-list .vh-act{width:100%;justify-content:center;min-height:42px}
+    }
+
+    @media(max-width:420px){
+        .vh-mobile-meta{grid-template-columns:1fr}
+        .vh-header h1{font-size:1.28rem}
+        .vh-cnt-chip{width:100%;justify-content:center}
     }
 </style>
 
@@ -188,7 +216,7 @@
                 @endif
             </div>
         @else
-            <div class="vh-tbl-wrap">
+            <div class="vh-tbl-wrap d-none d-md-block">
                 <table class="vh-tbl">
                     <thead>
                         <tr>
@@ -207,8 +235,8 @@
                             <tr>
                                 <td>
                                     <div class="vh-info">
-                                        @if($vehicle->image)
-                                            <img src="{{ Storage::url($vehicle->image) }}" alt="{{ $vehicle->name }}" class="vh-thumb">
+                                        @if($vehicle->display_image_url)
+                                            <img src="{{ $vehicle->display_image_url }}" alt="{{ $vehicle->name }}" class="vh-thumb">
                                         @else
                                             <div class="vh-thumb-placeholder">{{ $vehicle->getTypeIcon() }}</div>
                                         @endif
@@ -260,6 +288,74 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+
+            <div class="vh-mobile-list d-md-none">
+                @foreach ($vehicles as $vehicle)
+                    @php($displayStatus = $vehicle->current_rental_status)
+                    <div class="vh-mobile-card">
+                        <div class="vh-mobile-head">
+                            <div class="vh-info">
+                                @if($vehicle->display_image_url)
+                                    <img src="{{ $vehicle->display_image_url }}" alt="{{ $vehicle->name }}" class="vh-thumb">
+                                @else
+                                    <div class="vh-thumb-placeholder">{{ $vehicle->getTypeIcon() }}</div>
+                                @endif
+                                <div>
+                                    <div class="vh-name">{{ $vehicle->name }}</div>
+                                    <div class="vh-plat">{{ $vehicle->plat_number }}</div>
+                                </div>
+                            </div>
+                            <span class="vh-badge {{ $displayStatus }}">{{ ucfirst($displayStatus) }}</span>
+                        </div>
+
+                        <div class="vh-mobile-meta">
+                            <div class="vh-mobile-meta-item">
+                                <span class="label">Tipe</span>
+                                <span class="value">{{ $vehicle->getTypeIcon() }} {{ $vehicle->getTypeLabel() }}</span>
+                            </div>
+                            <div class="vh-mobile-meta-item">
+                                <span class="label">Transmisi</span>
+                                <span class="value">{{ $vehicle->transmission }}</span>
+                            </div>
+                            <div class="vh-mobile-meta-item">
+                                <span class="label">Tahun</span>
+                                <span class="value">{{ $vehicle->year }}</span>
+                            </div>
+                            <div class="vh-mobile-meta-item">
+                                <span class="label">Harga/Hari</span>
+                                <span class="value">Rp {{ number_format($vehicle->daily_price, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+
+                        <div class="vh-actions">
+                            <a href="{{ route('admin.vehicles.edit', $vehicle) }}" class="vh-act edit" title="Edit">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+
+                            <form method="POST" action="{{ route('admin.vehicles.toggle-maintenance', $vehicle) }}" style="display:inline">
+                                @csrf
+                                @if($displayStatus === 'maintenance')
+                                    <button type="submit" class="vh-act activate" title="Aktifkan Kembali">
+                                        <i class="bi bi-check-circle"></i> Aktifkan
+                                    </button>
+                                @elseif($displayStatus === 'available')
+                                    <button type="submit" class="vh-act maint" title="Set Maintenance" onclick="return confirm('Set kendaraan ke maintenance?')">
+                                        <i class="bi bi-tools"></i> Maintenance
+                                    </button>
+                                @endif
+                            </form>
+
+                            <form method="POST" action="{{ route('admin.vehicles.destroy', $vehicle) }}" style="display:inline" onsubmit="return confirm('Hapus kendaraan ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="vh-act delete" title="Hapus">
+                                    <i class="bi bi-trash3"></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
             </div>
 
             <div class="vh-pagination">
