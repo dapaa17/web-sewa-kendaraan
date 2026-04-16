@@ -2,13 +2,13 @@
     $usesAdminLayout = (bool) auth()->user()?->isAdmin();
     $bookingIndexRoute = $usesAdminLayout ? 'admin.bookings.index' : 'bookings.index';
 @endphp
-            margin-bottom: 1.2rem;
+@extends($usesAdminLayout ? 'layouts.admin' : 'layouts.app')
 
 @section('title', 'Detail Booking')
 @if($usesAdminLayout)
 @section('page-title', 'Detail Booking')
 @endif
-            margin-bottom: 0.5rem;
+
 @section('content')
 <style>
     .detail-header {
