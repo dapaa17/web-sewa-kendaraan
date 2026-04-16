@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -37,8 +38,9 @@ class ReportController extends Controller
 
         $totalTransactions = (clone $summaryQuery)->count();
         $totalRevenue = (clone $summaryQuery)->sum('total_price');
-        $totalLateFees = (clone $summaryQuery)->sum('late_fee');
-        $totalDamageFees = (clone $summaryQuery)->sum('return_damage_fee');
+        // Legacy rows may contain negative fee values. Normalize to absolute value in summary.
+        $totalLateFees = (clone $summaryQuery)->sum(DB::raw('ABS(COALESCE(late_fee, 0))'));
+        $totalDamageFees = (clone $summaryQuery)->sum(DB::raw('ABS(COALESCE(return_damage_fee, 0))'));
         $avgPerTransaction = $totalTransactions > 0 ? $totalRevenue / $totalTransactions : 0;
 
         // Available months for filter (from earliest booking to now)

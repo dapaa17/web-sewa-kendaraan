@@ -912,8 +912,8 @@
         </div>
         <div class="vehicle-info">
             <div class="vehicle-image">
-                @if($booking->vehicle->image)
-                    <img src="{{ Storage::url($booking->vehicle->image) }}" alt="{{ $booking->vehicle->name }}">
+                @if($booking->vehicle->display_image_url)
+                    <img src="{{ $booking->vehicle->display_image_url }}" alt="{{ $booking->vehicle->name }}">
                 @else
                     <div class="vehicle-placeholder">
                         <i class="bi {{ $booking->vehicle->vehicle_type === 'motor' ? 'bi-bicycle' : 'bi-car-front-fill' }}"></i>
@@ -994,10 +994,15 @@
             <span class="value price">Rp{{ number_format($booking->total_price, 0, ',', '.') }}</span>
         </div>
 
-        @if($booking->status === 'completed' && ($booking->late_days > 0 || $booking->return_damage_fee > 0))
+        @php
+            $normalizedLateFee = abs((float) ($booking->late_fee ?? 0));
+            $normalizedDamageFee = abs((float) ($booking->return_damage_fee ?? 0));
+        @endphp
+
+        @if($booking->status === 'completed' && ($booking->late_days > 0 || $normalizedDamageFee > 0 || $normalizedLateFee > 0))
             <div class="late-fee-card">
                 <h6><i class="bi bi-receipt"></i> Biaya Setelah Pengembalian</h6>
-                @if($booking->late_days > 0)
+                @if($booking->late_days > 0 || $normalizedLateFee > 0)
                     <div class="detail-row">
                         <span class="label">Tanggal Seharusnya Kembali</span>
                         <span class="value">{{ $booking->end_date->format('d M Y') }}</span>
@@ -1012,18 +1017,18 @@
                     </div>
                     <div class="detail-row">
                         <span class="label">Total Denda</span>
-                        <span class="value danger">Rp{{ number_format($booking->late_fee, 0, ',', '.') }}</span>
+                        <span class="value danger">Rp{{ number_format($normalizedLateFee, 0, ',', '.') }}</span>
                     </div>
                 @endif
-                @if($booking->return_damage_fee > 0)
+                @if($normalizedDamageFee > 0)
                     <div class="detail-row">
                         <span class="label">Biaya Tambahan Inspeksi</span>
-                        <span class="value danger">Rp{{ number_format($booking->return_damage_fee, 0, ',', '.') }}</span>
+                        <span class="value danger">Rp{{ number_format($normalizedDamageFee, 0, ',', '.') }}</span>
                     </div>
                 @endif
                 <div class="detail-row grand-total-row">
                     <span class="label"><strong>Grand Total</strong></span>
-                    <span class="value"><strong>Rp{{ number_format($booking->getTotalWithCompletionCharges(), 0, ',', '.') }}</strong></span>
+                    <span class="value"><strong>Rp{{ number_format(((float) $booking->total_price) + $normalizedLateFee + $normalizedDamageFee, 0, ',', '.') }}</strong></span>
                 </div>
             </div>
         @endif

@@ -40,6 +40,9 @@
                     @php
                         $displayStatusKey = $booking->getDisplayStatusKey();
                         $showLegacyTransferProof = $booking->payment_proof && $booking->payment_status === 'pending';
+                        $paymentMethodBadgeLabel = $showLegacyTransferProof
+                            ? 'Bukti Transfer'
+                            : ($booking->usesWhatsAppConfirmation() ? 'WhatsApp' : 'Belum Konfirmasi');
                     @endphp
                     <tr class="{{ $booking->isOverduePayment() ? 'is-overdue' : ($booking->isAwaitingPaymentProof() ? 'is-awaiting-proof' : ($booking->isMaintenanceHold() ? 'is-maintenance-hold' : '')) }}">
                         <td>
@@ -61,7 +64,7 @@
                             <div class="admin-cell-stack">
                                 @if($booking->payment_method || $booking->payment_proof)
                                     <span class="badge badge-method {{ $showLegacyTransferProof ? 'transfer' : 'whatsapp' }}">
-                                        <i class="bi {{ $showLegacyTransferProof ? 'bi-bank' : 'bi-whatsapp' }} me-1"></i>{{ $showLegacyTransferProof ? 'Bukti Transfer' : 'WhatsApp' }}
+                                        <i class="bi {{ $showLegacyTransferProof ? 'bi-bank' : 'bi-whatsapp' }} me-1"></i>{{ $paymentMethodBadgeLabel }}
                                     </span>
                                 @endif
 

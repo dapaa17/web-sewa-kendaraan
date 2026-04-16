@@ -371,7 +371,7 @@
     @endif
 
     <!-- Complete Form -->
-    <form method="POST" action="{{ route('admin.bookings.complete', $booking) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.bookings.complete', $booking) }}">
         @csrf
         <input type="hidden" name="return_date" value="{{ old('return_date', $returnDate ?? now()->toDateString()) }}">
         
@@ -443,21 +443,12 @@
         </div>
 
         <div class="info-card">
-            <h5><i class="bi bi-camera"></i> 3. Catatan dan Foto Pengembalian</h5>
+            <h5><i class="bi bi-journal-text"></i> 3. Catatan Pengembalian</h5>
             <div class="mb-4">
                 <label for="return_notes" class="field-label">Catatan admin</label>
                 <textarea class="form-control textarea-control @error('return_notes') is-invalid @enderror" id="return_notes" name="return_notes" placeholder="Tulis catatan kondisi kendaraan, keluhan customer, atau tindak lanjut yang perlu dilakukan...">{{ old('return_notes') }}</textarea>
                 <small class="helper-text">Gunakan catatan ini untuk menjelaskan lecet, aksesoris kurang, atau alasan biaya tambahan.</small>
                 @error('return_notes')
-                    <span class="error-text">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div>
-                <label for="return_photo" class="field-label">Foto kondisi saat dikembalikan</label>
-                <input type="file" class="form-control @error('return_photo') is-invalid @enderror" id="return_photo" name="return_photo" accept="image/png,image/jpeg,image/jpg,image/gif">
-                <small class="helper-text">Opsional, tapi sangat membantu jika ada kerusakan atau biaya tambahan yang perlu dibuktikan.</small>
-                @error('return_photo')
                     <span class="error-text">{{ $message }}</span>
                 @enderror
             </div>

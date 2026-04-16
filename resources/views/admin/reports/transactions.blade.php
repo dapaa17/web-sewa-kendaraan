@@ -151,6 +151,11 @@
                     </thead>
                     <tbody>
                         @foreach($bookings as $booking)
+                            @php
+                                $normalizedLateFee = abs((float) ($booking->late_fee ?? 0));
+                                $normalizedDamageFee = abs((float) ($booking->return_damage_fee ?? 0));
+                                $totalFee = $normalizedLateFee + $normalizedDamageFee;
+                            @endphp
                             <tr>
                                 <td style="font-weight:600;color:#94a3b8">#{{ $booking->id }}</td>
                                 <td>{{ $booking->updated_at->format('d M Y') }}</td>
@@ -165,7 +170,6 @@
                                 <td>{{ $booking->duration_days }} hari</td>
                                 <td style="font-weight:700;color:#0f172a">Rp{{ number_format($booking->total_price, 0, ',', '.') }}</td>
                                 <td>
-                                    @php($totalFee = ($booking->late_fee ?? 0) + ($booking->return_damage_fee ?? 0))
                                     @if($totalFee > 0)
                                         <span style="color:#dc2626;font-weight:600">Rp{{ number_format($totalFee, 0, ',', '.') }}</span>
                                     @else

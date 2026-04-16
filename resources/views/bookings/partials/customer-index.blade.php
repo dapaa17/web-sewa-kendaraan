@@ -27,6 +27,9 @@
         @foreach ($bookings as $booking)
             @php
                 $displayStatusKey = $booking->getDisplayStatusKey();
+                $normalizedLateFee = abs((float) ($booking->late_fee ?? 0));
+                $normalizedDamageFee = abs((float) ($booking->return_damage_fee ?? 0));
+                $totalCompletionFee = $normalizedLateFee + $normalizedDamageFee;
             @endphp
             <div class="booking-card {{ $displayStatusKey }} {{ $booking->isOverduePayment() ? 'payment-overdue' : '' }}">
                 <div class="header-row">
@@ -115,10 +118,10 @@
                         <span class="label">Total Harga</span>
                         <span class="value price">Rp{{ number_format($booking->total_price, 0, ',', '.') }}</span>
                     </div>
-                    @if($booking->late_fee > 0)
+                    @if($totalCompletionFee > 0)
                         <div class="detail-item">
-                            <span class="label">Denda</span>
-                            <span class="value" style="color: #ef4444;">Rp{{ number_format($booking->late_fee, 0, ',', '.') }}</span>
+                            <span class="label">Denda & Biaya</span>
+                            <span class="value" style="color: #ef4444;">Rp{{ number_format($totalCompletionFee, 0, ',', '.') }}</span>
                         </div>
                     @endif
                 </div>

@@ -84,12 +84,31 @@ class Vehicle extends Model
      */
     public function getDisplayImageUrlAttribute(): string
     {
-        if (!empty($this->image) && filter_var($this->image, FILTER_VALIDATE_URL)) {
-            return $this->image;
+        $image = trim((string) $this->image);
+
+        if ($image === '') {
+            return $this->buildInlinePlaceholderImage();
         }
 
-        if (!empty($this->image) && Storage::disk('public')->exists($this->image)) {
-            return Storage::url($this->image);
+        if (filter_var($image, FILTER_VALIDATE_URL)) {
+            return $image;
+        }
+
+        $normalizedImage = ltrim($image, '/');
+        if (str_starts_with($normalizedImage, 'storage/')) {
+            $normalizedImage = substr($normalizedImage, 8);
+        }
+
+        if ($normalizedImage !== '' && Storage::disk('public')->exists($normalizedImage)) {
+            return Storage::url($normalizedImage);
+        }
+
+        if (Storage::disk('public')->exists($image)) {
+            return Storage::url($image);
+        }
+
+        if ($normalizedImage !== '' && file_exists(public_path($normalizedImage))) {
+            return asset($normalizedImage);
         }
 
         return $this->buildInlinePlaceholderImage();
