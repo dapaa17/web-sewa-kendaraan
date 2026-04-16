@@ -112,9 +112,9 @@
         font-size: 0.9rem;
     }
     .payment-methods {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
         margin-bottom: 2rem;
     }
     .payment-card {
@@ -122,6 +122,7 @@
         border: 2px solid rgba(203,213,225,0.65);
         border-radius: 1.5rem;
         padding: 2rem;
+        width: min(100%, 680px);
         cursor: pointer;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         text-align: center;
@@ -308,7 +309,7 @@
             font-size: 0.98rem;
         }
         .payment-methods {
-            grid-template-columns: 1fr;
+            display: block;
             gap: 0.85rem;
             margin-bottom: 1.2rem;
         }
@@ -387,8 +388,8 @@
 <!-- Payment Header -->
 <div class="payment-header">
     <div class="container">
-        <h1><i class="bi bi-credit-card-2-front me-2"></i>Pilih Metode Pembayaran</h1>
-        <p class="mb-0 opacity-75">Pilih jalur konfirmasi pembayaran yang paling sesuai untuk Anda.</p>
+        <h1><i class="bi bi-credit-card-2-front me-2"></i>Konfirmasi Pembayaran</h1>
+        <p class="mb-0 opacity-75">Pembayaran dilakukan via transfer bank dan konfirmasi ke admin melalui WhatsApp.</p>
     </div>
 </div>
 
@@ -438,19 +439,20 @@
         </div>
     </div>
 
-    <!-- Method Selection -->
+    <!-- Payment Method -->
     <div class="method-title">
-        <h4>Pilih Metode Pembayaran</h4>
-        <p>Klik salah satu opsi di bawah untuk melanjutkan</p>
+        <h4>Metode Pembayaran Aktif</h4>
+        <p>Saat ini pembayaran dikonfirmasi melalui WhatsApp admin.</p>
     </div>
 
     <form method="POST" action="{{ route('bookings.process-payment', $booking) }}" id="paymentForm">
         @csrf
+        <input type="hidden" name="payment_method" value="whatsapp">
         
         <div class="payment-methods">
             <!-- WhatsApp Confirmation -->
             <label class="payment-card" id="card-whatsapp" for="radio-whatsapp">
-                <input type="radio" id="radio-whatsapp" name="payment_method" value="whatsapp" checked>
+                <input type="radio" id="radio-whatsapp" name="payment_method_display" value="whatsapp" checked>
                 <div class="check-badge"><i class="bi bi-check"></i></div>
                 <div class="icon-wrapper">
                     <span>💳</span>
@@ -462,23 +464,6 @@
                     <li><i class="bi bi-check-circle-fill"></i> Kirim bukti via WhatsApp</li>
                     <li><i class="bi bi-check-circle-fill"></i> Chat langsung dengan admin</li>
                     <li><i class="bi bi-check-circle-fill"></i> Konfirmasi via WhatsApp</li>
-                </ul>
-            </label>
-
-            <!-- Proof Upload -->
-            <label class="payment-card" id="card-transfer-proof" for="radio-transfer-proof">
-                <input type="radio" id="radio-transfer-proof" name="payment_method" value="transfer_proof">
-                <div class="check-badge"><i class="bi bi-check"></i></div>
-                <div class="icon-wrapper">
-                    <span>🏦</span>
-                </div>
-                <h4>Transfer + Upload Bukti</h4>
-                <p class="desc">Transfer manual lalu upload bukti pembayaran di website</p>
-                <ul class="features">
-                    <li><i class="bi bi-check-circle-fill"></i> Transfer ke Rekening</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Upload bukti transfer di website</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Status menunggu verifikasi admin</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Verifikasi oleh Admin</li>
                 </ul>
             </label>
         </div>
@@ -494,33 +479,15 @@
 
     <div class="info-alert">
         <i class="bi bi-info-circle-fill"></i>
-        <p><strong>Informasi Penting:</strong> Kedua metode di atas tetap memakai verifikasi manual admin. Selesaikan pembayaran sebelum {{ $booking->getPaymentDeadline()->format('d M Y H:i') }} untuk mengamankan booking Anda.</p>
+        <p><strong>Informasi Penting:</strong> Konfirmasi WhatsApp tetap memakai verifikasi manual admin. Selesaikan pembayaran sebelum {{ $booking->getPaymentDeadline()->format('d M Y H:i') }} untuk mengamankan booking Anda.</p>
     </div>
 </div>
 @endsection
 
 @section('js')
 <script>
-    const allRadios = document.querySelectorAll('input[name="payment_method"]');
-    const cardWhatsApp = document.getElementById('card-whatsapp');
-    const cardTransferProof = document.getElementById('card-transfer-proof');
-
-    function updateCardVisuals() {
-        const checkedValue = document.querySelector('input[name="payment_method"]:checked').value;
-        
-        if (checkedValue === 'whatsapp') {
-            cardWhatsApp.classList.add('active');
-            cardTransferProof.classList.remove('active');
-        } else {
-            cardTransferProof.classList.add('active');
-            cardWhatsApp.classList.remove('active');
-        }
-    }
-
-    allRadios.forEach(radio => {
-        radio.addEventListener('change', updateCardVisuals);
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('card-whatsapp')?.classList.add('active');
     });
-
-    document.addEventListener('DOMContentLoaded', updateCardVisuals);
 </script>
 @endsection

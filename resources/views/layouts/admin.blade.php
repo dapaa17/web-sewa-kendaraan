@@ -802,7 +802,6 @@
                     request()->routeIs('bookings.show')
                     || request()->routeIs('bookings.create')
                     || request()->routeIs('bookings.payment')
-                    || request()->routeIs('bookings.transfer-proof')
                     || request()->routeIs('payments.whatsapp-confirmation')
                 ));
             $admTimelineActive = request()->routeIs('admin.bookings.timeline');

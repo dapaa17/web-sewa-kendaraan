@@ -256,7 +256,7 @@ class BookingController extends Controller
                     'total_price' => $totalPrice,
                     'status' => 'pending',
                     'payment_status' => 'pending',
-                    'payment_method' => 'transfer_proof',
+                    'payment_method' => 'whatsapp',
                 ]);
 
                 return Auth::user()->bookings()->create($bookingData);
@@ -706,19 +706,16 @@ class BookingController extends Controller
                 ->with('warning', 'Silakan verifikasi KTP terlebih dahulu sebelum melakukan pembayaran.');
         }
         
-        $validated = $request->validate([
-            'payment_method' => 'required|in:whatsapp,transfer_proof',
+        $request->validate([
+            'payment_method' => 'nullable|in:whatsapp',
         ]);
 
-        // Update booking dengan payment method
-        $booking->update($validated);
+        // Upload bukti transfer dihapus, sehingga semua alur pembayaran diarahkan ke WhatsApp.
+        $booking->update([
+            'payment_method' => 'whatsapp',
+        ]);
 
-        // Redirect berdasarkan payment method
-        if ($validated['payment_method'] === 'whatsapp') {
-            return redirect()->route('bookings.whatsapp-payment', $booking);
-        }
-
-        return redirect()->route('bookings.transfer-proof', $booking);
+        return redirect()->route('bookings.whatsapp-payment', $booking);
     }
 
     public function whatsappPayment(Booking $booking)
@@ -733,49 +730,6 @@ class BookingController extends Controller
                 'error' => 'Tidak dapat mengakses halaman pembayaran: ' . $e->getMessage()
             ]);
         }
-    }
-
-    public function transferProofPayment(Booking $booking)
-    {
-        $this->authorize('pay', $booking);
-        
-        return view('bookings.offline-payment', compact('booking'));
-    }
-
-    public function uploadPaymentProof(Request $request, Booking $booking)
-    {
-        $this->authorize('pay', $booking);
-
-        abort_unless($booking->canUploadPaymentProof(), 403);
-        
-        $request->validate([
-            'payment_proof' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [
-            'payment_proof.required' => 'Bukti transfer wajib diupload',
-            'payment_proof.image' => 'File harus berupa gambar',
-            'payment_proof.mimes' => 'Format file harus JPG, PNG, atau GIF',
-            'payment_proof.max' => 'Ukuran file maksimal 2MB',
-        ]);
-
-        if ($request->hasFile('payment_proof') && $request->file('payment_proof')->isValid()) {
-            // Delete old proof if exists
-            if ($booking->payment_proof && Storage::disk('public')->exists($booking->payment_proof)) {
-                Storage::disk('public')->delete($booking->payment_proof);
-            }
-            
-            $path = $request->file('payment_proof')->store('proofs', 'public');
-            
-            if ($path) {
-                $booking->update([
-                    'payment_proof' => $path,
-                    'payment_status' => 'pending',
-                ]);
-                
-                return redirect()->route('bookings.show', $booking)->with('success', 'Bukti pembayaran berhasil diupload dan menunggu verifikasi admin');
-            }
-        }
-
-        return redirect()->back()->withErrors(['payment_proof' => 'Gagal mengupload file. Silakan coba lagi.']);
     }
 
     public function verifyPayment(Request $request, Booking $booking)

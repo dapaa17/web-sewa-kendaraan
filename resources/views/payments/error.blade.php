@@ -39,7 +39,7 @@
         <div class="pe-center">
             <div class="pe-icon"><i class="bi bi-x-circle-fill" style="color:#ef4444"></i></div>
             <h1 class="pe-title">Konfirmasi Pembayaran Gagal</h1>
-            <p class="pe-desc">Maaf, pembayaran Anda belum berhasil diproses. Silakan cek detail di bawah lalu ulangi pembayaran atau kirim ulang bukti transfer yang benar.</p>
+            <p class="pe-desc">Maaf, pembayaran Anda belum berhasil diproses. Silakan cek detail di bawah lalu ulangi pembayaran dan kirim ulang bukti transfer melalui WhatsApp admin.</p>
 
             <div class="pe-card">
                 <h3><i class="bi bi-exclamation-circle"></i> Detail Error</h3>
@@ -64,7 +64,7 @@
                 <ul>
                     <li>Pastikan nominal transfer sesuai total pembayaran booking</li>
                     <li>Pastikan bukti transfer dapat dibaca dengan jelas</li>
-                    <li>Ulangi pembayaran: upload bukti transfer atau konfirmasi via WhatsApp</li>
+                    <li>Ulangi pembayaran lalu kirim bukti transfer melalui WhatsApp admin</li>
                     <li>Hubungi admin jika masalah berlanjut</li>
                 </ul>
             </div>

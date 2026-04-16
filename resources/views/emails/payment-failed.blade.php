@@ -154,7 +154,7 @@
                 <li>Pastikan nominal transfer sudah sesuai total pembayaran booking</li>
                 <li>Pastikan bukti transfer yang dikirim jelas dan dapat dibaca</li>
                 <li>Jika memilih konfirmasi via WhatsApp, kirim bukti transfer ke admin melalui chat</li>
-                <li>Jika pembayaran ditolak, ulangi pembayaran atau upload bukti transfer yang benar</li>
+                <li>Jika pembayaran ditolak, ulangi pembayaran dan kirim bukti transfer terbaru via WhatsApp</li>
             </ul>
         </div>
 

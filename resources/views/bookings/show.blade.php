@@ -1078,7 +1078,7 @@
                 <div class="payment-info-box pending">
                     <i class="bi bi-hourglass"></i>
                     <div class="content">
-                        <strong>Bukti transfer sudah diupload</strong>
+                        <strong>Bukti transfer sudah dikirim</strong>
                         <p>Menunggu verifikasi admin. Status booking akan diperbarui setelah pembayaran dicek.</p>
                     </div>
                 </div>
@@ -1331,7 +1331,7 @@
             @endif
             
             @if($booking->canBeVerified())
-                @if($booking->usesTransferProof() && $booking->payment_proof)
+                @if($booking->payment_proof)
                     <p class="mb-2" style="opacity: 0.8;">Bukti Transfer:</p>
                     <img src="{{ asset('storage/' . $booking->payment_proof) }}" class="proof-image" alt="Bukti transfer">
                 @elseif($booking->usesWhatsAppConfirmation())
@@ -1402,7 +1402,7 @@
                 </div>
             @elseif($booking->usesTransferProof() && !$booking->payment_proof)
                 <div class="alert alert-warning">
-                    <i class="bi bi-hourglass"></i> <strong>Menunggu customer upload bukti transfer</strong>
+                    <i class="bi bi-hourglass"></i> <strong>Menunggu customer konfirmasi pembayaran via WhatsApp</strong>
                 </div>
             @else
                 <p style="opacity: 0.7;">Tidak ada aksi verifikasi yang diperlukan.</p>

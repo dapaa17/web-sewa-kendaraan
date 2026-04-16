@@ -790,7 +790,7 @@
             'items' => [
                 ['key' => 'maintenance_hold', 'label' => 'Tertahan Maintenance', 'icon' => 'bi-tools', 'count' => $counts['maintenance_hold'], 'tone' => 'danger', 'url' => $bookingIndexUrl('maintenance_hold')],
                 ['key' => 'overdue_payment', 'label' => 'Lewat Deadline', 'icon' => 'bi-exclamation-octagon', 'count' => $counts['overdue_payment'], 'tone' => 'danger', 'url' => $bookingIndexUrl('overdue_payment')],
-                ['key' => 'awaiting_proof', 'label' => 'Menunggu Bukti', 'icon' => 'bi-upload', 'count' => $counts['awaiting_proof'], 'tone' => 'warning', 'url' => $bookingIndexUrl('awaiting_proof')],
+                ['key' => 'awaiting_proof', 'label' => 'Menunggu Konfirmasi', 'icon' => 'bi-chat-dots', 'count' => $counts['awaiting_proof'], 'tone' => 'warning', 'url' => $bookingIndexUrl('awaiting_proof')],
             ],
         ]]);
     }
@@ -817,7 +817,7 @@
         'pending' => 'Booking yang masih menunggu pembayaran atau verifikasi awal.',
         'maintenance_hold' => 'Booking berbayar yang tertahan karena unit masuk maintenance dan perlu dijadwalkan ulang oleh admin.',
         'overdue_payment' => 'Booking yang sudah melewati batas pembayaran dan belum ada konfirmasi masuk.',
-        'awaiting_proof' => 'Booking transfer yang masih menunggu customer mengunggah bukti transfer.',
+        'awaiting_proof' => 'Booking yang masih menunggu konfirmasi pembayaran dari customer.',
         'scheduled' => 'Booking yang sudah aman dan tinggal menunggu jadwal mulai.',
         'awaiting_return' => 'Booking yang jadwalnya sudah dekat atau sudah masuk, tetapi unit masih tertahan.',
         'waiting_list' => 'Booking yang masuk antrean karena jadwal kendaraan masih bentrok.',

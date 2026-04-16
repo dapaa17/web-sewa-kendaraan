@@ -504,11 +504,10 @@
                     <div class="gd-step-content">
                         <div class="gd-step-title"><i class="bi bi-credit-card gd-step-icon"></i>Pilih Metode Pembayaran</div>
                         <p class="gd-step-text">
-                            Setelah booking dibuat, pilih metode pembayaran yang tersedia:
+                            Setelah booking dibuat, lanjutkan ke konfirmasi pembayaran via WhatsApp admin:
                         </p>
                         <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.35rem;">
-                            <span style="font-size: 0.9rem; color: var(--color-muted);"><i class="bi bi-bank gd-step-icon"></i><strong>Transfer Bank</strong> — Transfer ke rekening RentalHub dan upload bukti transfer</span>
-                            <span style="font-size: 0.9rem; color: var(--color-muted);"><i class="bi bi-whatsapp gd-step-icon"></i><strong>Konfirmasi WhatsApp</strong> — Konfirmasi pembayaran melalui chat WhatsApp</span>
+                            <span style="font-size: 0.9rem; color: var(--color-muted);"><i class="bi bi-whatsapp gd-step-icon"></i><strong>Konfirmasi WhatsApp</strong> — Transfer ke rekening RentalHub lalu kirim bukti transfer melalui chat WhatsApp</span>
                         </div>
                     </div>
                 </div>
@@ -517,9 +516,9 @@
                         <div class="gd-step-num">8</div>
                     </div>
                     <div class="gd-step-content">
-                        <div class="gd-step-title"><i class="bi bi-upload gd-step-icon"></i>Upload Bukti Transfer</div>
+                        <div class="gd-step-title"><i class="bi bi-whatsapp gd-step-icon"></i>Kirim Bukti Transfer via WhatsApp</div>
                         <p class="gd-step-text">
-                            Jika memilih Transfer Bank: transfer sesuai nominal ke rekening yang tertera, lalu upload screenshot bukti transfer. Format yang diterima: JPG, PNG, atau GIF, maksimal 2MB.
+                            Transfer sesuai nominal ke rekening yang tertera, lalu kirim screenshot bukti transfer ke admin lewat tombol WhatsApp pada halaman pembayaran.
                         </p>
                         <div class="gd-warn">
                             <i class="bi bi-exclamation-triangle-fill gd-warn-icon"></i>
@@ -538,7 +537,7 @@
                         </p>
                         <div class="gd-tip">
                             <i class="bi bi-lightbulb-fill gd-tip-icon"></i>
-                            <p class="gd-tip-text">Cek status pembayaran kapan saja di halaman <strong>Booking Saya</strong>. Jika ditolak, Anda bisa upload ulang bukti transfer yang benar.</p>
+                            <p class="gd-tip-text">Cek status pembayaran kapan saja di halaman <strong>Booking Saya</strong>. Jika ditolak, lakukan transfer ulang dan kirim bukti terbaru via WhatsApp.</p>
                         </div>
                     </div>
                 </div>

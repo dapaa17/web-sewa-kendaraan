@@ -171,7 +171,7 @@
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-        {{ $bookings->links() }}
+        {{ $bookings->links('vendor.pagination.custom') }}
     </div>
 @else
     <div class="empty-state">

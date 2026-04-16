@@ -130,8 +130,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/{booking}/payment', [BookingController::class, 'payment'])->name('payment');
         Route::post('/{booking}/process-payment', [BookingController::class, 'processPayment'])->name('process-payment');
         Route::get('/{booking}/whatsapp-confirmation', [BookingController::class, 'whatsappPayment'])->name('whatsapp-payment');
-        Route::get('/{booking}/transfer-proof', [BookingController::class, 'transferProofPayment'])->name('transfer-proof');
-        Route::post('/{booking}/upload-proof', [BookingController::class, 'uploadPaymentProof'])->name('upload-proof');
     });
 
     // WhatsApp confirmation flow

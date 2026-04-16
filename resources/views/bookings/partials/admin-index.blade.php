@@ -18,7 +18,7 @@
 @elseif(in_array($currentStatus, ['awaiting_proof', 'pending', 'all'], true))
     <div class="alert alert-warning border-0 rounded-4 mb-4 shadow-sm">
         <i class="bi bi-alarm me-2"></i>
-        Booking yang masih menunggu bukti transfer diprioritaskan berdasarkan deadline pembayaran terdekat.
+        Booking yang masih menunggu konfirmasi pembayaran diprioritaskan berdasarkan deadline pembayaran terdekat.
     </div>
 @endif
 
@@ -39,6 +39,7 @@
                 @foreach ($bookings as $booking)
                     @php
                         $displayStatusKey = $booking->getDisplayStatusKey();
+                        $showLegacyTransferProof = $booking->payment_proof && $booking->payment_status === 'pending';
                     @endphp
                     <tr class="{{ $booking->isOverduePayment() ? 'is-overdue' : ($booking->isAwaitingPaymentProof() ? 'is-awaiting-proof' : ($booking->isMaintenanceHold() ? 'is-maintenance-hold' : '')) }}">
                         <td>
@@ -58,9 +59,9 @@
                         </td>
                         <td>
                             <div class="admin-cell-stack">
-                                @if($booking->payment_method)
-                                    <span class="badge badge-method {{ $booking->usesWhatsAppConfirmation() ? 'whatsapp' : 'transfer' }}">
-                                        <i class="bi {{ $booking->usesWhatsAppConfirmation() ? 'bi-whatsapp' : 'bi-bank' }} me-1"></i>{{ $booking->getPaymentMethodShortLabel() }}
+                                @if($booking->payment_method || $booking->payment_proof)
+                                    <span class="badge badge-method {{ $showLegacyTransferProof ? 'transfer' : 'whatsapp' }}">
+                                        <i class="bi {{ $showLegacyTransferProof ? 'bi-bank' : 'bi-whatsapp' }} me-1"></i>{{ $showLegacyTransferProof ? 'Bukti Transfer' : 'WhatsApp' }}
                                     </span>
                                 @endif
 
@@ -174,11 +175,10 @@
                                 @if(
                                     $booking->status === 'pending'
                                     && $booking->payment_status === 'pending'
-                                    && $booking->usesTransferProof()
                                     && !$booking->payment_proof
                                 )
                                     <button type="button" class="btn btn-action btn-pending-review" disabled>
-                                        <i class="bi bi-hourglass-split me-1"></i>Menunggu Bukti Transfer
+                                        <i class="bi bi-whatsapp me-1"></i>Menunggu Konfirmasi WhatsApp
                                     </button>
                                 @endif
                             </div>
@@ -190,7 +190,7 @@
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-        {{ $bookings->links() }}
+        {{ $bookings->links('vendor.pagination.custom') }}
     </div>
 @else
     <div class="empty-state">
@@ -202,7 +202,7 @@
                     'pending' => 'Pending',
                     'maintenance_hold' => 'Tertahan Maintenance',
                     'overdue_payment' => 'Lewat Deadline',
-                    'awaiting_proof' => 'Menunggu Bukti',
+                    'awaiting_proof' => 'Menunggu Konfirmasi',
                     'scheduled' => 'Terjadwal',
                     'awaiting_return' => 'Menunggu Unit',
                     'waiting_list' => 'Antrean',

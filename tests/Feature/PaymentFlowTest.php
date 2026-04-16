@@ -22,7 +22,7 @@ class PaymentFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_verified_customer_can_choose_transfer_proof_payment(): void
+    public function test_transfer_proof_method_is_rejected_in_payment_flow(): void
     {
         $customer = $this->createVerifiedCustomer();
         $booking = $this->createBookingFor($customer);
@@ -32,7 +32,7 @@ class PaymentFlowTest extends TestCase
                 'payment_method' => 'transfer_proof',
             ]);
 
-        $response->assertRedirect(route('bookings.transfer-proof', $booking));
+        $response->assertSessionHasErrors('payment_method');
         $this->assertSame('transfer_proof', $booking->fresh()->payment_method);
     }
 
@@ -75,44 +75,26 @@ class PaymentFlowTest extends TestCase
             ->assertSessionHas('warning', 'Silakan verifikasi KTP terlebih dahulu sebelum melakukan pembayaran.');
     }
 
-    public function test_customer_can_upload_payment_proof(): void
+    public function test_transfer_proof_page_route_is_not_available(): void
     {
-        Storage::fake('public');
-
         $customer = $this->createVerifiedCustomer();
-        $booking = $this->createBookingFor($customer, [
-            'payment_method' => 'transfer_proof',
-        ]);
-
-        $response = $this->actingAs($customer)
-            ->post(route('bookings.upload-proof', $booking), [
-                'payment_proof' => UploadedFile::fake()->create('proof.jpg', 120, 'image/jpeg'),
-            ]);
-
-        $response->assertRedirect(route('bookings.show', $booking));
-        $response->assertSessionHas('success', 'Bukti pembayaran berhasil diupload dan menunggu verifikasi admin');
-
-        $booking->refresh();
-
-        $this->assertNotNull($booking->payment_proof);
-        $this->assertSame('pending', $booking->payment_status);
-        $this->assertContains($booking->payment_proof, Storage::disk('public')->allFiles('proofs'));
-    }
-
-    public function test_customer_cannot_upload_payment_proof_for_whatsapp_booking(): void
-    {
-        Storage::fake('public');
-
-        $customer = $this->createVerifiedCustomer();
-        $booking = $this->createBookingFor($customer, [
-            'payment_method' => 'whatsapp',
-        ]);
+        $booking = $this->createBookingFor($customer);
 
         $this->actingAs($customer)
-            ->post(route('bookings.upload-proof', $booking), [
+            ->get('/bookings/' . $booking->id . '/transfer-proof')
+            ->assertNotFound();
+    }
+
+    public function test_upload_proof_route_is_not_available(): void
+    {
+        $customer = $this->createVerifiedCustomer();
+        $booking = $this->createBookingFor($customer);
+
+        $this->actingAs($customer)
+            ->post('/bookings/' . $booking->id . '/upload-proof', [
                 'payment_proof' => UploadedFile::fake()->create('proof.jpg', 120, 'image/jpeg'),
             ])
-            ->assertForbidden();
+            ->assertNotFound();
     }
 
     public function test_admin_can_verify_payment_and_mark_vehicle_rented_when_rental_has_started(): void
@@ -1127,8 +1109,9 @@ class PaymentFlowTest extends TestCase
 
         $response->assertOk()
             ->assertSee('Tinjau Pembayaran')
-            ->assertSee('Menunggu Bukti Transfer')
-            ->assertSee('Upload Bukti')
+            ->assertSee('Bukti Transfer')
+            ->assertSee('Belum Konfirmasi')
+            ->assertSee('Belum ada konfirmasi pembayaran')
             ->assertSee('WhatsApp')
             ->assertSee(route('bookings.show', $reviewableBooking));
 
@@ -1205,7 +1188,7 @@ class PaymentFlowTest extends TestCase
         Carbon::setTestNow();
     }
 
-    public function test_admin_can_filter_bookings_waiting_for_transfer_proof(): void
+    public function test_admin_can_filter_bookings_waiting_for_payment_confirmation(): void
     {
         Carbon::setTestNow('2026-03-10 12:00:00');
 
@@ -1257,16 +1240,16 @@ class PaymentFlowTest extends TestCase
             ->get(route('admin.bookings.index', ['status' => 'awaiting_proof']));
 
         $response->assertOk()
-            ->assertSee('Menunggu Bukti')
+            ->assertSee('Menunggu Konfirmasi')
             ->assertSee('Toyota Menunggu Bukti Cepat')
             ->assertSee('Honda Bukti Reguler')
-            ->assertSee('Upload Bukti')
-            ->assertSee('Menunggu Bukti Transfer')
+            ->assertSee('Suzuki WhatsApp')
+            ->assertSee('Belum ada konfirmasi pembayaran')
+            ->assertSee('Tinjau Pembayaran')
             ->assertSee('Perlu Follow Up')
             ->assertSee('Booking #' . $waitingProofBooking->id)
             ->assertDontSee('Honda Sudah Upload')
-            ->assertDontSee('Suzuki WhatsApp')
-            ->assertDontSee('Tinjau Pembayaran');
+            ->assertDontSee('Honda Sudah Upload');
 
         $content = $response->getContent();
         $urgentPosition = strpos($content, 'Toyota Menunggu Bukti Cepat');

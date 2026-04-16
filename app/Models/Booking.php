@@ -370,17 +370,13 @@ class Booking extends Model
     }
 
     /**
-     * Scope pending transfer-proof bookings that are still waiting for the customer to upload proof.
+     * Scope pending bookings that are still waiting for customer payment confirmation.
      */
     public function scopeAwaitingPaymentProof(Builder $query): Builder
     {
         return $query->where('status', 'pending')
             ->where('payment_status', 'pending')
-            ->whereNull('payment_proof')
-            ->where(function (Builder $query) {
-                $query->whereIn('payment_method', ['transfer_proof', 'offline'])
-                    ->orWhereNull('payment_method');
-            });
+            ->whereNull('payment_proof');
     }
 
     /**
@@ -800,18 +796,17 @@ class Booking extends Model
      */
     public function canUploadPaymentProof(): bool
     {
-        return $this->canEnterPaymentFlow() && $this->usesTransferProof();
+        return false;
     }
 
     /**
-     * Check if this booking is still waiting for the customer to upload transfer proof.
+     * Check if this booking is still waiting for customer payment confirmation.
      */
     public function isAwaitingPaymentProof(): bool
     {
         return $this->status === 'pending'
             && $this->payment_status === 'pending'
-            && $this->payment_proof === null
-            && ($this->usesTransferProof() || $this->payment_method === null);
+            && $this->payment_proof === null;
     }
 
     /**
@@ -887,7 +882,9 @@ class Booking extends Model
         }
 
         if ($this->usesTransferProof()) {
-            return 'Upload Bukti Transfer';
+            return $this->payment_proof
+                ? 'Bukti Transfer (Legacy)'
+                : 'Belum Konfirmasi WhatsApp';
         }
 
         return ucfirst((string) $this->payment_method);
@@ -903,7 +900,7 @@ class Booking extends Model
         }
 
         if ($this->usesTransferProof()) {
-            return 'Upload Bukti';
+            return $this->payment_proof ? 'Bukti Transfer' : 'Belum Konfirmasi';
         }
 
         return ucfirst((string) $this->payment_method);
