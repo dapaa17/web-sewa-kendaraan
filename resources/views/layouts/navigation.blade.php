@@ -2,6 +2,7 @@
     $dashboardActive = request()->routeIs('dashboard');
     $browseActive = request()->routeIs('vehicles.browse') || request()->routeIs('vehicles.show');
     $bookingsActive = request()->routeIs('bookings.*');
+    $reportsActive = request()->routeIs('reports.*');
     $reviewsActive = request()->routeIs('reviews.*');
     $adminActive = request()->routeIs('admin.*');
     $profileActive = request()->routeIs('profile.*');
@@ -30,6 +31,11 @@
                     <li class="nav-item">
                         <a class="nav-link {{ $bookingsActive ? 'active' : '' }}" href="{{ route('bookings.index') }}">Booking Saya</a>
                     </li>
+                    @unless(auth()->user()->isAdmin())
+                    <li class="nav-item">
+                        <a class="nav-link {{ $reportsActive ? 'active' : '' }}" href="{{ route('reports.transactions') }}">Laporan Keuangan</a>
+                    </li>
+                    @endunless
                     @unless(auth()->user()->isAdmin())
                     <li class="nav-item">
                         <a class="nav-link {{ $reviewsActive ? 'active' : '' }}" href="{{ route('reviews.index') }}">Ulasan Saya</a>

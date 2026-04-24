@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminCalendarController;
-use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminKtpController;
 use App\Http\Controllers\AdminBookingTimelineController;
@@ -10,6 +10,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController as CustomerReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
@@ -93,9 +94,17 @@ Route::middleware('auth')->group(function () {
 
         // Reports
         Route::prefix('reports')->name('reports.')->group(function () {
-            Route::get('/transactions', [ReportController::class, 'transactions'])->name('transactions');
+            Route::get('/transactions', [AdminReportController::class, 'transactions'])->name('transactions');
+            Route::get('/transactions/export/excel', [AdminReportController::class, 'exportExcel'])->name('transactions.export.excel');
+            Route::get('/transactions/export/pdf', [AdminReportController::class, 'exportPdf'])->name('transactions.export.pdf');
         });
 
+    });
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/transactions', [CustomerReportController::class, 'transactions'])->name('transactions');
+        Route::get('/transactions/export/excel', [CustomerReportController::class, 'exportExcel'])->name('transactions.export.excel');
+        Route::get('/transactions/export/pdf', [CustomerReportController::class, 'exportPdf'])->name('transactions.export.pdf');
     });
 
     // Note: Browse & vehicle detail routes moved outside auth group for public access

@@ -285,24 +285,10 @@ class Vehicle extends Model
      */
     public function shouldBeMarkedRented($referenceDate = null): bool
     {
-        $referenceDate = $referenceDate
-            ? Carbon::parse($referenceDate)
-            : Carbon::now();
-
-        $today = $referenceDate->toDateString();
-        $currentTime = $referenceDate->format('H:i:s');
-
         return $this->bookings()
             ->where('status', 'confirmed')
             ->where('payment_status', 'paid')
             ->whereNull('maintenance_hold_at')
-            ->where(function ($startedQuery) use ($today, $currentTime) {
-                $startedQuery->whereDate('start_date', '<', $today)
-                    ->orWhere(function ($sameDayQuery) use ($today, $currentTime) {
-                        $sameDayQuery->whereDate('start_date', $today)
-                            ->whereRaw('COALESCE(pickup_time, ?) <= ?', [Booking::DEFAULT_PICKUP_TIME, $currentTime]);
-                    });
-            })
             ->exists();
     }
 

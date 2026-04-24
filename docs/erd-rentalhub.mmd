@@ -1,0 +1,107 @@
+﻿erDiagram
+    USERS ||--o{ BOOKINGS : membuat
+    VEHICLES ||--o{ BOOKINGS : dipesan
+    BOOKINGS ||--o| REVIEWS : menghasilkan
+    USERS ||--o{ REVIEWS : menulis
+    VEHICLES ||--o{ REVIEWS : diulas
+    REVIEWS ||--o{ REVIEW_HELPFUL_VOTES : menerima
+    USERS ||--o{ REVIEW_HELPFUL_VOTES : memberi
+    VEHICLES ||--o{ MAINTENANCE_SCHEDULES : dijadwalkan
+    VEHICLES ||--o{ PRICING_RULES : memiliki
+
+    USERS {
+        bigint id PK
+        string name
+        string email UK
+        string password
+        enum role
+        string ktp_number
+        string ktp_image
+        enum ktp_status
+        timestamp ktp_verified_at
+        timestamp deleted_at
+    }
+
+    VEHICLES {
+        bigint id PK
+        string name
+        enum vehicle_type
+        string plat_number UK
+        enum transmission
+        int year
+        decimal daily_price
+        decimal base_price
+        decimal weekend_multiplier
+        decimal peak_season_multiplier
+        decimal low_season_multiplier
+        enum status
+        string image
+        timestamp deleted_at
+    }
+
+    BOOKINGS {
+        bigint id PK
+        bigint user_id FK
+        bigint vehicle_id FK
+        date start_date
+        time pickup_time
+        date end_date
+        time return_time
+        int duration_days
+        decimal daily_price
+        decimal total_price
+        enum status
+        enum payment_method
+        enum payment_status
+        string payment_proof
+        date actual_return_date
+        decimal late_fee
+        decimal return_damage_fee
+        timestamp maintenance_hold_at
+        timestamp deleted_at
+    }
+
+    REVIEWS {
+        bigint id PK
+        bigint booking_id FK UK
+        bigint user_id FK
+        bigint vehicle_id FK
+        tinyint rating
+        string title
+        text review_text
+        string status
+        int helpful_count
+        bigint moderated_by FK
+        timestamp moderated_at
+    }
+
+    REVIEW_HELPFUL_VOTES {
+        bigint id PK
+        bigint review_id FK
+        bigint user_id FK
+    }
+
+    MAINTENANCE_SCHEDULES {
+        bigint id PK
+        bigint vehicle_id FK
+        date start_date
+        date end_date
+        string reason
+        text notes
+    }
+
+    PRICING_RULES {
+        bigint id PK
+        bigint vehicle_id FK
+        date start_date
+        date end_date
+        tinyint discount_percentage
+        enum type
+        boolean active
+    }
+
+    APP_SETTINGS {
+        bigint id PK
+        string key UK
+        string value
+    }

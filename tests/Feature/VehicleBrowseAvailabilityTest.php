@@ -187,6 +187,30 @@ class VehicleBrowseAvailabilityTest extends TestCase
             ->assertSee('Disewa');
     }
 
+    public function test_browse_without_date_filter_shows_future_confirmed_paid_booking_as_rented(): void
+    {
+        Carbon::setTestNow('2026-03-10 10:00:00');
+
+        $user = $this->createCustomer();
+        $vehicle = $this->createVehicle([
+            'name' => 'Toyota Future Confirmed',
+            'status' => 'available',
+        ]);
+
+        $this->createBookingForVehicle($vehicle, [
+            'start_date' => now()->addDays(2)->toDateString(),  // Future date
+            'end_date' => now()->addDays(4)->toDateString(),
+            'status' => 'confirmed',
+            'payment_status' => 'paid',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('vehicles.browse'))
+            ->assertOk()
+            ->assertSee($vehicle->name)
+            ->assertSee('Disewa');
+    }
+
     public function test_vehicle_show_uses_current_rental_status_for_active_booking(): void
     {
         Carbon::setTestNow('2026-03-10 10:00:00');

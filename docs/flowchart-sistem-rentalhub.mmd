@@ -1,0 +1,27 @@
+flowchart TD
+    A[Mulai] --> B[Pengguna membuka website RentalHub]
+    B --> C{Sudah login?}
+    C -- Belum --> D[Registrasi atau Login]
+    D --> E[Masuk ke Dashboard Customer]
+    C -- Ya --> E
+
+    E --> F[Pilih kendaraan dan tanggal sewa]
+    F --> G{Kendaraan tersedia?}
+    G -- Tidak --> H[Pilih jadwal atau kendaraan lain]
+    H --> F
+    G -- Ya --> I[Buat booking status pending]
+
+    I --> J[Pilih metode pembayaran]
+    J --> K[WhatsApp atau unggah bukti transfer]
+    K --> L[Admin verifikasi pembayaran]
+    L --> M{Pembayaran valid?}
+    M -- Tidak --> N[Perbaiki pembayaran]
+    N --> K
+    M -- Ya --> O[Booking confirmed]
+
+    O --> P[Proses sewa berjalan]
+    P --> Q[Admin inspeksi pengembalian]
+    Q --> R[Booking completed]
+    R --> S[Customer kirim review]
+    S --> T[Admin moderasi review]
+    T --> U[Selesai]

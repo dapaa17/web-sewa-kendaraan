@@ -130,7 +130,7 @@ class AdminVehicleRealtimeStatusTest extends TestCase
         $this->assertSame('rented', $vehicle->status);
     }
 
-    public function test_same_day_future_pickup_keeps_vehicle_available_until_pickup_time(): void
+    public function test_same_day_future_pickup_marks_vehicle_as_rented_after_payment(): void
     {
         Carbon::setTestNow('2026-03-10 08:00:00');
 
@@ -154,13 +154,13 @@ class AdminVehicleRealtimeStatusTest extends TestCase
 
         $vehicle->refresh();
 
-        $this->assertSame('available', $vehicle->current_rental_status);
+        $this->assertSame('rented', $vehicle->current_rental_status);
 
         $this->actingAs($admin)
             ->get(route('admin.dashboard'))
             ->assertOk()
-            ->assertViewHas('availableVehicles', 1)
-            ->assertViewHas('rentedVehicles', 0);
+            ->assertViewHas('availableVehicles', 0)
+            ->assertViewHas('rentedVehicles', 1);
     }
 
     private function createAdmin(array $overrides = []): User

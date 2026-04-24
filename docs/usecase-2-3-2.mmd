@@ -1,0 +1,39 @@
+﻿flowchart TB
+    subgraph ACT[Aktor]
+        direction LR
+        P[Pengunjung]
+        C[Customer]
+        A[Admin]
+    end
+
+    subgraph RH[Sistem RentalHub - Use Case Hak Akses]
+        direction TB
+
+        subgraph R1[ ]
+            direction LR
+            U1((Akses halaman publik))
+            U2((Registrasi / Login))
+            U3((Booking kendaraan))
+            U4((Pembayaran booking))
+        end
+
+        subgraph R2[ ]
+            direction LR
+            U5((Riwayat booking & review))
+            U6((Kelola data kendaraan))
+            U7((Verifikasi pembayaran & KTP))
+            U8((Moderasi review & laporan))
+        end
+    end
+
+    P --> U1
+    P --> U2
+
+    C --> U1
+    C --> U3
+    C --> U4
+    C --> U5
+
+    A --> U6
+    A --> U7
+    A --> U8
