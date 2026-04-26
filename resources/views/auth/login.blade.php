@@ -19,7 +19,7 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <div style="margin-bottom: 1.1rem;">
+        <div class="auth-form-row">
             <label for="email" class="form-label">Email</label>
             <div class="input-icon-wrap">
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autofocus placeholder="nama@email.com">
@@ -27,9 +27,9 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 1.1rem;">
+        <div class="auth-form-row">
             <label for="password" class="form-label">Password</label>
-            <div class="input-icon-wrap">
+            <div class="input-icon-wrap has-toggle">
                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="••••••••">
                 <i class="bi bi-lock input-icon"></i>
                 <button type="button" class="pw-toggle" onclick="togglePw('password', this)" tabindex="-1"><i class="bi bi-eye-slash"></i></button>

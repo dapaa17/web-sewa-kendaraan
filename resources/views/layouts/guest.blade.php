@@ -121,6 +121,7 @@
             }
             .auth-card .form-control {
                 border-radius: 0.7rem;
+                width: 100%;
                 padding: 0.7rem 0.9rem;
                 border: 1px solid rgba(203,213,225,0.7);
                 font-size: 0.88rem;
@@ -131,12 +132,24 @@
                 box-shadow: 0 0 0 3px rgba(var(--color-secondary-rgb), 0.15);
             }
 
+            .auth-card .form-row {
+                margin-bottom: 1.1rem;
+            }
+            .auth-card .form-row:last-child {
+                margin-bottom: 0;
+            }
+
             /* Input with icon */
             .input-icon-wrap {
                 position: relative;
+                width: 100%;
             }
             .input-icon-wrap .form-control {
                 padding-left: 2.6rem;
+                padding-right: 0.9rem;
+            }
+            .input-icon-wrap.has-toggle .form-control {
+                padding-right: 2.6rem;
             }
             .input-icon-wrap .input-icon {
                 position: absolute;
@@ -155,7 +168,7 @@
             /* Password toggle */
             .input-icon-wrap .pw-toggle {
                 position: absolute;
-                right: 0.75rem;
+                right: 0.85rem;
                 top: 50%;
                 transform: translateY(-50%);
                 color: #94a3b8;
@@ -166,6 +179,7 @@
                 border: none;
                 padding: 0;
                 line-height: 1;
+                z-index: 2;
                 transition: color 0.2s;
             }
             .input-icon-wrap .pw-toggle:hover {
