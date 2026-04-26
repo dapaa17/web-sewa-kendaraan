@@ -24,6 +24,7 @@ class Vehicle extends Model
         'name',
         'vehicle_type',
         'plat_number',
+        'total_units',
         'transmission',
         'year',
         'daily_price',
@@ -48,8 +49,17 @@ class Vehicle extends Model
         'weekend_multiplier' => 'decimal:2',
         'peak_season_multiplier' => 'decimal:2',
         'low_season_multiplier' => 'decimal:2',
+        'total_units' => 'integer',
         'year' => 'integer',
     ];
+
+    /**
+     * Normalize total units so every vehicle always has at least 1 bookable unit.
+     */
+    public function getTotalUnitCount(): int
+    {
+        return max((int) ($this->total_units ?? 1), 1);
+    }
 
     protected static function booted(): void
     {
@@ -285,10 +295,17 @@ class Vehicle extends Model
      */
     public function shouldBeMarkedRented($referenceDate = null): bool
     {
+        $moment = $referenceDate instanceof Carbon
+            ? $referenceDate->copy()
+            : ($referenceDate ? Carbon::parse($referenceDate) : Carbon::now());
+
+        // Vehicle status uses date-based start semantics for realtime dashboard/list badges.
+        // Same-day bookings are treated as rented once the date starts.
         return $this->bookings()
             ->where('status', 'confirmed')
             ->where('payment_status', 'paid')
             ->whereNull('maintenance_hold_at')
+            ->whereDate('start_date', '<=', $moment->toDateString())
             ->exists();
     }
 
@@ -337,17 +354,24 @@ class Vehicle extends Model
             return $this->currentRentalStatusState = 'maintenance';
         }
 
-        return $this->currentRentalStatusState = $this->resolveRentalStatus();
+        $hasConfirmedPaidBooking = $this->bookings()
+            ->where('status', 'confirmed')
+            ->where('payment_status', 'paid')
+            ->whereNull('maintenance_hold_at')
+            ->exists();
+
+        return $this->currentRentalStatusState = $hasConfirmedPaidBooking ? 'rented' : 'available';
     }
 
     /**
      * Determine whether a vehicle can be booked directly or via waiting list.
      *
-     * @return array{available: bool, queue_available: bool, blocking_bookings: \Illuminate\Support\Collection, queue_bookings: \Illuminate\Support\Collection, maintenance_schedules: \Illuminate\Support\Collection}
+     * @return array{available: bool, queue_available: bool, blocking_bookings: \Illuminate\Support\Collection, queue_bookings: \Illuminate\Support\Collection, maintenance_schedules: \Illuminate\Support\Collection, total_units: int, remaining_units: int, blocking_units: int, queue_units: int}
      */
-    public function getBookingAvailability($startDate, $endDate): array
+    public function getBookingAvailability($startDate, $endDate, ?int $excludeBookingId = null): array
     {
         [$startDate, $endDate] = $this->normalizeDateRange($startDate, $endDate);
+        $totalUnits = $this->getTotalUnitCount();
 
         if ($this->status === 'maintenance') {
             return [
@@ -356,6 +380,10 @@ class Vehicle extends Model
                 'blocking_bookings' => collect(),
                 'queue_bookings' => collect(),
                 'maintenance_schedules' => collect(),
+                'total_units' => $totalUnits,
+                'remaining_units' => 0,
+                'blocking_units' => 0,
+                'queue_units' => 0,
             ];
         }
 
@@ -368,36 +396,65 @@ class Vehicle extends Model
                 'blocking_bookings' => collect(),
                 'queue_bookings' => collect(),
                 'maintenance_schedules' => $maintenanceSchedules,
+                'total_units' => $totalUnits,
+                'remaining_units' => 0,
+                'blocking_units' => 0,
+                'queue_units' => 0,
             ];
         }
 
-        $blockingBookings = $this->bookings()
+        $blockingBookingsQuery = $this->bookings()
             ->blockingAvailability()
-            ->overlappingRange($startDate->toDateString(), $endDate->toDateString())
+            ->overlappingRange($startDate->toDateString(), $endDate->toDateString());
+
+        if ($excludeBookingId !== null) {
+            $blockingBookingsQuery->whereKeyNot($excludeBookingId);
+        }
+
+        $blockingBookings = $blockingBookingsQuery
             ->get(['id', 'start_date', 'end_date']);
 
-        if ($blockingBookings->isNotEmpty()) {
+        $blockingUnits = $blockingBookings->count();
+        $remainingUnitsAfterBlocking = max($totalUnits - $blockingUnits, 0);
+
+        if ($blockingUnits >= $totalUnits) {
             return [
                 'available' => false,
                 'queue_available' => false,
                 'blocking_bookings' => $blockingBookings,
                 'queue_bookings' => collect(),
                 'maintenance_schedules' => collect(),
+                'total_units' => $totalUnits,
+                'remaining_units' => 0,
+                'blocking_units' => $blockingUnits,
+                'queue_units' => 0,
             ];
         }
 
-        $queueBookings = $this->bookings()
+        $queueBookingsQuery = $this->bookings()
             ->queueableAvailability()
-            ->overlappingRange($startDate->toDateString(), $endDate->toDateString())
+            ->overlappingRange($startDate->toDateString(), $endDate->toDateString());
+
+        if ($excludeBookingId !== null) {
+            $queueBookingsQuery->whereKeyNot($excludeBookingId);
+        }
+
+        $queueBookings = $queueBookingsQuery
             ->get(['id', 'start_date', 'end_date']);
 
-        if ($queueBookings->isNotEmpty()) {
+        $queueUnits = $queueBookings->count();
+
+        if ($queueUnits >= $remainingUnitsAfterBlocking && $remainingUnitsAfterBlocking > 0) {
             return [
                 'available' => false,
                 'queue_available' => true,
                 'blocking_bookings' => collect(),
                 'queue_bookings' => $queueBookings,
                 'maintenance_schedules' => collect(),
+                'total_units' => $totalUnits,
+                'remaining_units' => 0,
+                'blocking_units' => $blockingUnits,
+                'queue_units' => $queueUnits,
             ];
         }
 
@@ -407,6 +464,10 @@ class Vehicle extends Model
             'blocking_bookings' => collect(),
             'queue_bookings' => collect(),
             'maintenance_schedules' => collect(),
+            'total_units' => $totalUnits,
+            'remaining_units' => max($remainingUnitsAfterBlocking - $queueUnits, 0),
+            'blocking_units' => $blockingUnits,
+            'queue_units' => $queueUnits,
         ];
     }
 
@@ -515,6 +576,7 @@ class Vehicle extends Model
 
         return [
             'vehicle_id' => $this->id,
+            'total_units' => $this->getTotalUnitCount(),
             'month' => $month,
             'year' => $year,
             'dates' => $this->buildDailyStatusEntries($startDate, $endDate),
@@ -539,6 +601,7 @@ class Vehicle extends Model
 
         return [
             'vehicle_id' => $this->id,
+            'total_units' => $this->getTotalUnitCount(),
             'start_date' => $startDate->toDateString(),
             'end_date' => $endDate->toDateString(),
             'duration_days' => $durationDays,
@@ -570,10 +633,34 @@ class Vehicle extends Model
             ->whereDoesntHave('maintenanceSchedules', function (Builder $scheduleQuery) use ($startDate, $endDate) {
                 $scheduleQuery->overlappingRange($startDate, $endDate);
             })
-            ->whereDoesntHave('bookings', function (Builder $bookingQuery) use ($startDate, $endDate) {
-                $bookingQuery->blockingAvailability()
-                    ->overlappingRange($startDate, $endDate);
-            });
+            ->whereRaw(
+                '(SELECT COUNT(*) FROM bookings WHERE bookings.vehicle_id = vehicles.id AND bookings.deleted_at IS NULL '
+                . 'AND ((bookings.start_date BETWEEN ? AND ?) '
+                . 'OR (bookings.end_date BETWEEN ? AND ?) '
+                . 'OR (bookings.start_date <= ? AND bookings.end_date >= ?)) '
+                . 'AND ((bookings.status = ? AND bookings.payment_status IN (?, ?)) '
+                . 'OR (bookings.status = ? AND bookings.payment_status = ? '
+                . 'AND ((bookings.start_date > ?) '
+                . 'OR (bookings.start_date = ? AND COALESCE(bookings.pickup_time, ?) > ?)))) '
+                . 'AND bookings.maintenance_hold_at IS NULL) < COALESCE(vehicles.total_units, 1)',
+                [
+                    $startDate,
+                    $endDate,
+                    $startDate,
+                    $endDate,
+                    $startDate,
+                    $endDate,
+                    'pending',
+                    'pending',
+                    'paid',
+                    'confirmed',
+                    'paid',
+                    now()->toDateString(),
+                    now()->toDateString(),
+                    Booking::DEFAULT_PICKUP_TIME,
+                    now()->format('H:i:s'),
+                ]
+            );
     }
 
     /**
@@ -607,6 +694,7 @@ class Vehicle extends Model
 
         return [
             'vehicle_id' => $this->id,
+            'total_units' => $this->getTotalUnitCount(),
             'start_date' => $startDate->toDateString(),
             'end_date' => $endDate->toDateString(),
             'dates' => $this->buildDailyStatusEntries($startDate, $endDate, $pricingReferenceStart),
@@ -776,16 +864,34 @@ class Vehicle extends Model
             ];
         }
 
-        $booking = $bookings->first(function (Booking $booking) use ($date) {
+        $bookingsOnDate = $bookings->filter(function (Booking $booking) use ($date) {
             return Carbon::parse($booking->start_date)->startOfDay()->lte($date)
                 && Carbon::parse($booking->end_date)->startOfDay()->gte($date);
         });
 
-        if ($booking instanceof Booking) {
+        $totalUnits = $this->getTotalUnitCount();
+        $bookedUnits = $bookingsOnDate->count();
+
+        if ($bookedUnits >= $totalUnits) {
+            $latestEndDate = $bookingsOnDate
+                ->map(fn (Booking $booking) => Carbon::parse($booking->end_date)->toDateString())
+                ->sort()
+                ->last();
+
             return [
                 'date' => $date->toDateString(),
                 'status' => 'booked',
-                'reason' => 'Dibooking sampai ' . Carbon::parse($booking->end_date)->toDateString(),
+                'reason' => 'Semua unit dibooking sampai ' . ($latestEndDate ?? $date->toDateString()),
+            ];
+        }
+
+        if ($bookedUnits > 0) {
+            $remainingUnits = $totalUnits - $bookedUnits;
+
+            return [
+                'date' => $date->toDateString(),
+                'status' => 'available',
+                'reason' => $remainingUnits . ' unit masih tersedia.',
             ];
         }
 

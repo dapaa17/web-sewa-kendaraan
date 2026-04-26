@@ -577,6 +577,9 @@
                                 <span class="info-item">
                                     <i class="bi bi-card-text"></i> {{ $vehicle->plat_number }}
                                 </span>
+                                <span class="info-item">
+                                    <i class="bi bi-box-seam"></i> {{ $vehicle->getTotalUnitCount() }} unit
+                                </span>
                             </div>
 
                             <div class="review-strip">

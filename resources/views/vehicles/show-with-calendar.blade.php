@@ -747,8 +747,12 @@
 
                     <div class="vhc-vehicle-facts">
                         <div class="fact">
-                            <span class="label">Nomor Plat</span>
+                            <span class="label">Kode / Plat Armada</span>
                             <strong>{{ $vehicle->plat_number }}</strong>
+                        </div>
+                        <div class="fact">
+                            <span class="label">Jumlah Unit</span>
+                            <strong>{{ $vehicle->getTotalUnitCount() }} unit</strong>
                         </div>
                         <div class="fact">
                             <span class="label">Tahun</span>

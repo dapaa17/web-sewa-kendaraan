@@ -126,6 +126,81 @@ flowchart TD
 	T --> U[Selesai]
 ```
 
+### 2.4 Daftar Tabel
+
+Database aplikasi RentalHub terdiri dari tabel utama dan tabel pendukung Laravel sebagai berikut.
+
+#### a. users
+
+| No | Nama Field | Tipe Data | Keterangan |
+| --- | --- | --- | --- |
+| 1 | id | bigint UNSIGNED | Primary key, auto increment, identitas unik pengguna. |
+| 2 | name | varchar(255) | Nama pengguna. |
+| 3 | email | varchar(255) | Email unik pengguna. |
+| 4 | password | varchar(255) | Password dalam bentuk hash. |
+| 5 | role | enum('admin','customer') | Peran pengguna. |
+| 6 | ktp_status | enum('pending','verified','rejected') | Status verifikasi KTP. |
+| 7 | created_at | timestamp | Waktu data dibuat. |
+| 8 | updated_at | timestamp | Waktu data diperbarui. |
+
+#### b. vehicles
+
+| No | Nama Field | Tipe Data | Keterangan |
+| --- | --- | --- | --- |
+| 1 | id | bigint UNSIGNED | Primary key, auto increment, identitas unik kendaraan. |
+| 2 | name | varchar(255) | Nama kendaraan. |
+| 3 | vehicle_type | enum('mobil','motor') | Jenis kendaraan. |
+| 4 | plat_number | varchar(255) | Nomor plat kendaraan, bersifat unik. |
+| 5 | transmission | enum('Manual','Otomatis') | Jenis transmisi kendaraan. |
+| 6 | year | int | Tahun produksi kendaraan. |
+| 7 | daily_price | decimal(10,2) | Harga sewa harian. |
+| 8 | status | enum('available','rented','maintenance') | Status kendaraan. |
+| 9 | image | varchar(255) | Path gambar kendaraan (opsional). |
+| 10 | created_at | timestamp | Waktu data dibuat. |
+| 11 | updated_at | timestamp | Waktu data diperbarui. |
+
+#### c. bookings
+
+| No | Nama Field | Tipe Data | Keterangan |
+| --- | --- | --- | --- |
+| 1 | id | bigint UNSIGNED | Primary key, auto increment, identitas unik booking. |
+| 2 | user_id | bigint UNSIGNED | Foreign key ke tabel users (customer pemesan). |
+| 3 | vehicle_id | bigint UNSIGNED | Foreign key ke tabel vehicles (unit yang disewa). |
+| 4 | start_date | date | Tanggal mulai sewa. |
+| 5 | end_date | date | Tanggal selesai sewa. |
+| 6 | duration_days | int | Durasi sewa (hari). |
+| 7 | total_price | decimal(10,2) | Total biaya booking. |
+| 8 | status | enum/varchar | Status booking (pending, confirmed, dll). |
+| 9 | payment_method | enum/varchar(50) | Metode pembayaran. |
+| 10 | payment_status | enum('pending','paid','failed','refunded') | Status pembayaran. |
+| 11 | payment_proof | varchar(255) | Bukti transfer (opsional). |
+| 12 | created_at | timestamp | Waktu data dibuat. |
+| 13 | updated_at | timestamp | Waktu data diperbarui. |
+
+### 3.1 Proses Pembuatan Proyek
+
+Subbab ini menjelaskan tahapan pengembangan sistem RentalHub sebagaimana ditampilkan pada diagram tahapan manajemen proyek. Proses pengembangan dilakukan secara bertahap agar setiap komponen, mulai dari perencanaan hingga pengujian, dapat diimplementasikan secara terstruktur dan saling terintegrasi.
+
+1. Perencanaan
+
+Tahap perencanaan dimulai dari analisis kebutuhan pengguna customer dan admin, identifikasi alur bisnis booking kendaraan, serta penentuan kebutuhan fungsional utama seperti autentikasi, verifikasi KTP, pembayaran, waiting list, dan moderasi review. Pada tahap ini juga disusun rancangan antarmuka awal berbasis Blade untuk memastikan navigasi antarhalaman mudah dipahami pengguna.
+
+2. Perancangan Database
+
+Tahap database berfokus pada perancangan struktur data inti sistem, meliputi tabel pengguna, kendaraan, booking, pembayaran, dan review. Relasi antarentitas dirancang agar mendukung proses transaksi sewa secara lengkap dari awal pemesanan hingga penyelesaian. Selain itu, skema migrasi disusun agar kompatibel pada lingkungan SQLite (pengujian lokal) maupun MySQL (deployment).
+
+3. Implementasi Backend
+
+Pada tahap backend, sistem dibangun menggunakan Laravel 12 dengan penerapan middleware autentikasi, otorisasi berbasis policy, dan logika bisnis booking. Fitur utama yang diimplementasikan mencakup validasi ketersediaan kendaraan, pengelolaan status booking-pembayaran, verifikasi KTP oleh admin, waiting list, serta otomatisasi melalui scheduler seperti pembatalan booking unpaid dan pengiriman reminder email.
+
+4. Implementasi Frontend
+
+Tahap frontend dilakukan dengan Blade template, Tailwind CSS, Alpine.js, dan Vite untuk membangun antarmuka yang responsif. Implementasi difokuskan pada halaman transaksi utama seperti browse kendaraan, form booking, halaman pembayaran, riwayat booking customer, dan dashboard admin. Setiap halaman diintegrasikan dengan status transaksi agar pengguna dapat memantau progres proses sewa secara jelas.
+
+5. Pengujian Sistem
+
+Tahap pengujian dilakukan untuk memastikan seluruh modul berjalan sesuai kebutuhan. Pengujian mencakup pengujian fungsional alur booking dan pembayaran, validasi proses verifikasi admin, pengujian scheduler dan queue, serta pengujian regresi setelah perbaikan bug. Hasil pengujian menunjukkan bahwa fitur inti RentalHub dapat berjalan stabil dan mendukung proses operasional rental kendaraan dari sisi customer maupun admin.
+
 ### 3.4 Kendala dan Solusi
 
 Pada tahap implementasi sistem RentalHub, terdapat beberapa kendala yang muncul selama proses pengembangan dan pengujian. Kendala tersebut kemudian diselesaikan melalui perbaikan pada alur sistem, validasi data, dan penguatan proses operasional.

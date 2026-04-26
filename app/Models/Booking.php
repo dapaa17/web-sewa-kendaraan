@@ -330,16 +330,46 @@ class Booking extends Model
         static::applyStartedByMomentConstraint($query, $moment);
 
         return $query
-            ->whereExists(function ($subQuery) {
-                $subQuery->selectRaw('1')
-                    ->from('bookings as earlier_bookings')
-                    ->whereColumn('earlier_bookings.vehicle_id', 'bookings.vehicle_id')
-                    ->where('earlier_bookings.status', 'confirmed')
-                    ->where('earlier_bookings.payment_status', 'paid')
-                    ->where(function ($comparisonQuery) {
-                        static::applyEarlierStartMomentComparison($comparisonQuery, 'earlier_bookings', 'bookings');
-                    });
-            });
+            ->whereRaw('(
+                SELECT COUNT(*)
+                FROM bookings AS earlier_bookings
+                WHERE earlier_bookings.vehicle_id = bookings.vehicle_id
+                    AND earlier_bookings.status = ?
+                    AND earlier_bookings.payment_status = ?
+                    AND earlier_bookings.maintenance_hold_at IS NULL
+                    AND earlier_bookings.deleted_at IS NULL
+                    AND (
+                        earlier_bookings.start_date < bookings.start_date
+                        OR (
+                            earlier_bookings.start_date = bookings.start_date
+                            AND (
+                                COALESCE(earlier_bookings.pickup_time, ?) < COALESCE(bookings.pickup_time, ?)
+                                OR (
+                                    COALESCE(earlier_bookings.pickup_time, ?) = COALESCE(bookings.pickup_time, ?)
+                                    AND earlier_bookings.id < bookings.id
+                                )
+                            )
+                        )
+                    )
+                    AND (
+                        earlier_bookings.start_date < ?
+                        OR (
+                            earlier_bookings.start_date = ?
+                            AND COALESCE(earlier_bookings.pickup_time, ?) <= ?
+                        )
+                    )
+            ) >= COALESCE((SELECT total_units FROM vehicles WHERE vehicles.id = bookings.vehicle_id), 1)', [
+                'confirmed',
+                'paid',
+                self::DEFAULT_PICKUP_TIME,
+                self::DEFAULT_PICKUP_TIME,
+                self::DEFAULT_PICKUP_TIME,
+                self::DEFAULT_PICKUP_TIME,
+                $moment->toDateString(),
+                $moment->toDateString(),
+                self::DEFAULT_PICKUP_TIME,
+                $moment->format('H:i:s'),
+            ]);
     }
 
     /**
@@ -357,16 +387,46 @@ class Booking extends Model
         static::applyStartedByMomentConstraint($query, $moment);
 
         return $query
-            ->whereNotExists(function ($subQuery) {
-                $subQuery->selectRaw('1')
-                    ->from('bookings as earlier_bookings')
-                    ->whereColumn('earlier_bookings.vehicle_id', 'bookings.vehicle_id')
-                    ->where('earlier_bookings.status', 'confirmed')
-                    ->where('earlier_bookings.payment_status', 'paid')
-                    ->where(function ($comparisonQuery) {
-                        static::applyEarlierStartMomentComparison($comparisonQuery, 'earlier_bookings', 'bookings');
-                    });
-            });
+            ->whereRaw('(
+                SELECT COUNT(*)
+                FROM bookings AS earlier_bookings
+                WHERE earlier_bookings.vehicle_id = bookings.vehicle_id
+                    AND earlier_bookings.status = ?
+                    AND earlier_bookings.payment_status = ?
+                    AND earlier_bookings.maintenance_hold_at IS NULL
+                    AND earlier_bookings.deleted_at IS NULL
+                    AND (
+                        earlier_bookings.start_date < bookings.start_date
+                        OR (
+                            earlier_bookings.start_date = bookings.start_date
+                            AND (
+                                COALESCE(earlier_bookings.pickup_time, ?) < COALESCE(bookings.pickup_time, ?)
+                                OR (
+                                    COALESCE(earlier_bookings.pickup_time, ?) = COALESCE(bookings.pickup_time, ?)
+                                    AND earlier_bookings.id < bookings.id
+                                )
+                            )
+                        )
+                    )
+                    AND (
+                        earlier_bookings.start_date < ?
+                        OR (
+                            earlier_bookings.start_date = ?
+                            AND COALESCE(earlier_bookings.pickup_time, ?) <= ?
+                        )
+                    )
+            ) < COALESCE((SELECT total_units FROM vehicles WHERE vehicles.id = bookings.vehicle_id), 1)', [
+                'confirmed',
+                'paid',
+                self::DEFAULT_PICKUP_TIME,
+                self::DEFAULT_PICKUP_TIME,
+                self::DEFAULT_PICKUP_TIME,
+                self::DEFAULT_PICKUP_TIME,
+                $moment->toDateString(),
+                $moment->toDateString(),
+                self::DEFAULT_PICKUP_TIME,
+                $moment->format('H:i:s'),
+            ]);
     }
 
     /**

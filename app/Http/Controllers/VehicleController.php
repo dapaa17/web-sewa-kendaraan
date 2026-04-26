@@ -56,7 +56,15 @@ class VehicleController extends Controller
                 ->whereHas('bookings', $activeBookingConstraint);
         } elseif ($status === 'available') {
             $query->where('status', '!=', 'maintenance')
-                ->whereDoesntHave('bookings', $activeBookingConstraint);
+                ->whereRaw('(
+                    SELECT COUNT(*)
+                    FROM bookings
+                    WHERE bookings.vehicle_id = vehicles.id
+                        AND bookings.deleted_at IS NULL
+                        AND bookings.status = ?
+                        AND bookings.payment_status = ?
+                        AND bookings.start_date <= ?
+                ) < COALESCE(vehicles.total_units, 1)', ['confirmed', 'paid', $today]);
         }
 
         $vehicles = $query->latest()->paginate(10)->withQueryString();
@@ -78,6 +86,7 @@ class VehicleController extends Controller
             'name' => 'required|string|max:255',
             'vehicle_type' => 'required|in:mobil,motor',
             'plat_number' => 'required|string|unique:vehicles',
+            'total_units' => 'required|integer|min:1|max:999',
             'transmission' => 'required|in:Manual,Otomatis',
             'year' => 'required|integer|min:1900|max:' . date('Y'),
             'daily_price' => 'required|numeric|min:0',
@@ -116,6 +125,7 @@ class VehicleController extends Controller
             'name' => 'required|string|max:255',
             'vehicle_type' => 'required|in:mobil,motor',
             'plat_number' => 'required|string|unique:vehicles,plat_number,' . $vehicle->id,
+            'total_units' => 'sometimes|integer|min:1|max:999',
             'transmission' => 'required|in:Manual,Otomatis',
             'year' => 'required|integer|min:1900|max:' . date('Y'),
             'daily_price' => 'required|numeric|min:0',
@@ -127,6 +137,7 @@ class VehicleController extends Controller
         ]);
 
         $validated['base_price'] = $validated['daily_price'];
+        $validated['total_units'] = $validated['total_units'] ?? $vehicle->getTotalUnitCount();
         $validated['weekend_multiplier'] = $validated['weekend_multiplier'] ?? $vehicle->weekend_multiplier ?? 1.2;
         $validated['peak_season_multiplier'] = $validated['peak_season_multiplier'] ?? $vehicle->peak_season_multiplier ?? 1.4;
         $validated['low_season_multiplier'] = $validated['low_season_multiplier'] ?? $vehicle->low_season_multiplier ?? 0.8;
@@ -189,8 +200,6 @@ class VehicleController extends Controller
         }
 
         if ($hasAvailabilityFilter) {
-            $query->bookableForDates($request->query('start_date'), $request->query('end_date'));
-
             $selectedDateLabel = Carbon::parse($request->query('start_date'))->format('d M Y')
                 . ' - '
                 . Carbon::parse($request->query('end_date'))->format('d M Y');
@@ -216,6 +225,16 @@ class VehicleController extends Controller
 
                 return $vehicle;
             });
+
+            $vehicles->setCollection(
+                $vehicles->getCollection()
+                    ->filter(function (Vehicle $vehicle) {
+                        $availability = $vehicle->bookingAvailability ?? ['available' => false, 'queue_available' => false];
+
+                        return !empty($availability['available']) || !empty($availability['queue_available']);
+                    })
+                    ->values()
+            );
         }
 
         return view('vehicles.browse', compact('vehicles', 'hasAvailabilityFilter', 'selectedDateLabel'));

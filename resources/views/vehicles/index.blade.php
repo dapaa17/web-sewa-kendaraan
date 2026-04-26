@@ -163,7 +163,7 @@
 
             <form method="GET" action="{{ route('admin.vehicles.index') }}" class="vh-filter-grid">
                 <div class="vh-field">
-                    <label for="vehicle-search">Cari kendaraan atau plat</label>
+                    <label for="vehicle-search">Cari kendaraan atau kode armada</label>
                     <input type="text" id="vehicle-search" name="search" class="form-control" value="{{ $filters['search'] ?? '' }}" placeholder="Contoh: Avanza atau B 1234 XYZ">
                 </div>
                 <div class="vh-field">
@@ -223,6 +223,7 @@
                             <th style="padding-left:1.25rem">Kendaraan</th>
                             <th>Tipe</th>
                             <th>Transmisi</th>
+                            <th>Unit</th>
                             <th>Tahun</th>
                             <th>Harga/Hari</th>
                             <th>Status</th>
@@ -242,12 +243,13 @@
                                         @endif
                                         <div>
                                             <div class="vh-name">{{ $vehicle->name }}</div>
-                                            <div class="vh-plat">{{ $vehicle->plat_number }}</div>
+                                            <div class="vh-plat">{{ $vehicle->plat_number }} • {{ $vehicle->getTotalUnitCount() }} unit</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td><span class="vh-type-chip">{{ $vehicle->getTypeIcon() }} {{ $vehicle->getTypeLabel() }}</span></td>
                                 <td>{{ $vehicle->transmission }}</td>
+                                <td>{{ $vehicle->getTotalUnitCount() }}</td>
                                 <td>{{ $vehicle->year }}</td>
                                 <td style="font-weight:600;color:#0f172a">Rp {{ number_format($vehicle->daily_price, 0, ',', '.') }}</td>
                                 <td>
@@ -303,7 +305,7 @@
                                 @endif
                                 <div>
                                     <div class="vh-name">{{ $vehicle->name }}</div>
-                                    <div class="vh-plat">{{ $vehicle->plat_number }}</div>
+                                    <div class="vh-plat">{{ $vehicle->plat_number }} • {{ $vehicle->getTotalUnitCount() }} unit</div>
                                 </div>
                             </div>
                             <span class="vh-badge {{ $displayStatus }}">{{ ucfirst($displayStatus) }}</span>
@@ -321,6 +323,10 @@
                             <div class="vh-mobile-meta-item">
                                 <span class="label">Tahun</span>
                                 <span class="value">{{ $vehicle->year }}</span>
+                            </div>
+                            <div class="vh-mobile-meta-item">
+                                <span class="label">Unit</span>
+                                <span class="value">{{ $vehicle->getTotalUnitCount() }} unit</span>
                             </div>
                             <div class="vh-mobile-meta-item">
                                 <span class="label">Harga/Hari</span>

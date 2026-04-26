@@ -608,7 +608,7 @@ class BookingController extends Controller
             ->whereIn('status', ['pending', 'confirmed', 'waiting_list'])
             ->whereIn('payment_status', ['pending', 'paid'])
             ->overlappingRange($startDate->toDateString(), $endDate->toDateString())
-            ->exists();
+            ->count() >= $booking->vehicle->getTotalUnitCount();
 
         if ($hasConflict) {
             return redirect()->back()->withErrors([
@@ -745,11 +745,13 @@ class BookingController extends Controller
         $notes = $validated['notes'] ?? null;
 
         if ($verified) {
-            $shouldWaitlist = $booking->vehicle->bookings()
+            $queueableOverlapCount = $booking->vehicle->bookings()
                 ->whereKeyNot($booking->id)
                 ->queueableAvailability()
                 ->overlappingRange($booking->start_date, $booking->end_date)
-                ->exists();
+                ->count();
+
+            $shouldWaitlist = $queueableOverlapCount >= $booking->vehicle->getTotalUnitCount();
 
             $booking->update([
                 'status' => $shouldWaitlist ? 'waiting_list' : 'confirmed',

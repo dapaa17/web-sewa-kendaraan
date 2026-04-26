@@ -127,7 +127,7 @@
                         {{-- Plat + Transmisi --}}
                         <div class="vf-row">
                             <div class="vf-group">
-                                <label for="plat_number" class="vf-label">Nomor Plat <span class="required">*</span></label>
+                                <label for="plat_number" class="vf-label">Kode / Plat Armada <span class="required">*</span></label>
                                 <input type="text" class="vf-control @error('plat_number') is-invalid @enderror" id="plat_number" name="plat_number" value="{{ old('plat_number') }}" placeholder="contoh: B 1234 XYZ" required>
                                 @error('plat_number')<div class="text-danger" style="font-size:.8rem;margin-top:.35rem">{{ $message }}</div>@enderror
                             </div>
@@ -139,6 +139,19 @@
                                     <option value="Otomatis" {{ old('transmission') === 'Otomatis' ? 'selected' : '' }}>Otomatis</option>
                                 </select>
                                 @error('transmission')<div class="text-danger" style="font-size:.8rem;margin-top:.35rem">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        <div class="vf-row">
+                            <div class="vf-group">
+                                <label for="total_units" class="vf-label">Jumlah Unit <span class="required">*</span></label>
+                                <input type="number" class="vf-control @error('total_units') is-invalid @enderror" id="total_units" name="total_units" value="{{ old('total_units', 1) }}" min="1" max="999" required>
+                                <div class="vf-hint">Total unit yang tersedia untuk model kendaraan ini.</div>
+                                @error('total_units')<div class="text-danger" style="font-size:.8rem;margin-top:.35rem">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="vf-group">
+                                <label class="vf-label">Catatan Armada</label>
+                                <div class="vf-hint">Booking akan dihitung berdasarkan kapasitas unit ini, bukan hanya 1 unit per kendaraan.</div>
                             </div>
                         </div>
 

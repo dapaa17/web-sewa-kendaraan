@@ -79,7 +79,7 @@
         <div class="vf-shell">
             <a href="{{ route('admin.vehicles.index') }}" class="vf-back"><i class="bi bi-arrow-left"></i> Kembali ke Daftar</a>
             <h1><i class="bi bi-pencil-square me-2" style="font-size:1.5rem"></i>Edit Kendaraan</h1>
-            <p class="subtitle mb-0">{{ $vehicle->name }} — {{ $vehicle->plat_number }}</p>
+            <p class="subtitle mb-0">{{ $vehicle->name }} — {{ $vehicle->plat_number }} — {{ $vehicle->getTotalUnitCount() }} unit</p>
         </div>
     </div>
 </div>
@@ -144,7 +144,7 @@
                         {{-- Plat + Transmisi --}}
                         <div class="vf-row">
                             <div class="vf-group">
-                                <label for="plat_number" class="vf-label">Nomor Plat <span class="required">*</span></label>
+                                <label for="plat_number" class="vf-label">Kode / Plat Armada <span class="required">*</span></label>
                                 <input type="text" class="vf-control @error('plat_number') is-invalid @enderror" id="plat_number" name="plat_number" value="{{ old('plat_number', $vehicle->plat_number) }}" required>
                                 @error('plat_number')<div class="text-danger" style="font-size:.8rem;margin-top:.35rem">{{ $message }}</div>@enderror
                             </div>
@@ -155,6 +155,19 @@
                                     <option value="Otomatis" {{ old('transmission', $vehicle->transmission) === 'Otomatis' ? 'selected' : '' }}>Otomatis</option>
                                 </select>
                                 @error('transmission')<div class="text-danger" style="font-size:.8rem;margin-top:.35rem">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        <div class="vf-row">
+                            <div class="vf-group">
+                                <label for="total_units" class="vf-label">Jumlah Unit <span class="required">*</span></label>
+                                <input type="number" class="vf-control @error('total_units') is-invalid @enderror" id="total_units" name="total_units" value="{{ old('total_units', $vehicle->getTotalUnitCount()) }}" min="1" max="999" required>
+                                <div class="vf-hint">Booking pada kendaraan ini akan mengikuti jumlah unit yang tersedia.</div>
+                                @error('total_units')<div class="text-danger" style="font-size:.8rem;margin-top:.35rem">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="vf-group">
+                                <label class="vf-label">Kapasitas Armada</label>
+                                <div class="vf-hint">Naikkan jumlah unit saat armada bertambah, turunkan bila unit dikurangi.</div>
                             </div>
                         </div>
 

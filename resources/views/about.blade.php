@@ -274,7 +274,7 @@
         <!-- Stats -->
         <div class="ab-stats">
             <div class="ab-stat">
-                <div class="ab-stat-num">{{ \App\Models\Vehicle::where('status', 'available')->count() }}+</div>
+                <div class="ab-stat-num">{{ \App\Models\Vehicle::sum('total_units') }}+</div>
                 <div class="ab-stat-label">Kendaraan Tersedia</div>
             </div>
             <div class="ab-stat">

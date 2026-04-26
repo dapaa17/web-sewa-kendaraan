@@ -20,7 +20,7 @@ class AdminCalendarController extends Controller
     {
         $referenceDate = now()->startOfMonth();
         $vehicles = Vehicle::query()
-            ->select(['id', 'name', 'plat_number', 'vehicle_type', 'status', 'base_price', 'daily_price'])
+            ->select(['id', 'name', 'plat_number', 'total_units', 'vehicle_type', 'status', 'base_price', 'daily_price'])
             ->orderBy('name')
             ->get();
         $fleetVehicles = $vehicles->map(function (Vehicle $vehicle) {
@@ -28,6 +28,7 @@ class AdminCalendarController extends Controller
                 'id' => $vehicle->id,
                 'name' => $vehicle->name,
                 'plate' => $vehicle->plat_number,
+                'total_units' => $vehicle->getTotalUnitCount(),
                 'type' => $vehicle->vehicle_type,
                 'base_price' => (float) ($vehicle->base_price ?? $vehicle->daily_price),
             ];
