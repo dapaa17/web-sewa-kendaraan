@@ -46,6 +46,7 @@ APP_ENV=production
 APP_DEBUG=false
 APP_KEY=base64:... (copy dari .env lokal atau generate baru)
 APP_URL=https://your-app-name.up.railway.app
+AUTO_RUN_MIGRATIONS=true
 
 DB_CONNECTION=postgres
 DB_HOST=${{Postgres.PGHOST}}
@@ -70,6 +71,8 @@ PAYMENT_BANK_NAME=Bank BCA
 PAYMENT_ACCOUNT_NAME=PT. RentalHub Indonesia
 PAYMENT_ACCOUNT_NUMBER=1234567890
 ```
+
+`AUTO_RUN_MIGRATIONS=true` akan menjalankan `php artisan migrate --force --no-interaction` otomatis saat service boot agar schema selalu sinkron setelah deploy.
 
 ### Cara mendapatkan APP_KEY:
 
